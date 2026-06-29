@@ -1,0 +1,6 @@
+# Input data files (raw Excel uploads)
+input/*.xlsx
+
+# OS files
+.DS_Store
+Thumbs.db
