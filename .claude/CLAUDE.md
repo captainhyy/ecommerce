@@ -10,12 +10,13 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 # VS Code: Dùng extension "Live Server" (chuột phải index.html → Open with Live Server)
 # Hoặc Python:
 python -m http.server 8000
-# Truy cập: http://localhost:8000/reports/2026/
+# Truy cập: http://localhost:8000/
 ```
 
 **URL params để test:**
 - `?p=q1` — xem Q1 2026
 - `?p=q2` — xem Q2 2026
+- `?p=ytdh1` — xem YTD H1 2026 (Q1+Q2 gộp)
 - `?cat=but_viet&sub=but_bi` — filter category/sub-category
 
 ## Cập nhật dữ liệu
@@ -81,20 +82,26 @@ var MONTHLY = [{ m: 'Apr', rv, pre_rv, ts, pre_ts }, ...]; // 3 tháng/quý
 
 ```
 Ecom/
-├── .claude/workflows/update_ecom_data.md   # Workflow cập nhật data
+├── .claude/
+│   ├── CLAUDE.md                           # File này
+│   ├── rules/brand_colors.md               # Quy tắc màu thương hiệu
+│   └── workflows/update_ecom_data.md       # Workflow cập nhật data
+├── .github/workflows/static.yml            # Deploy GitHub Pages
 ├── input/                                  # Excel đầu vào: {cate}_{subcate}.xlsx
 ├── data/2026/
 │   ├── ecom_data_q1.js                     # Data Q1 (thực tế)
-│   └── ecom_data_q2.js                     # Data Q2 (đang cập nhật dần)
-├── reports/2026/
-│   └── index.html                          # Dashboard (UI + data loader)
+│   ├── ecom_data_q2.js                     # Data Q2 (thực tế)
+│   └── ecom_data_ytdh1.js                  # Data YTD H1 (Q1+Q2 gộp)
+├── index.html                              # Dashboard (UI + data loader) — ở gốc repo để phục vụ GitHub Pages
 ├── templates/data_update_template.xlsx     # Template Excel mẫu
-├── CLAUDE.md / KNOWLEDGE.md / README.md
+├── KNOWLEDGE.md / README.md
 ```
 
 ## Trạng thái hiện tại
 
 - Q1 2026: data thực tế ✅
-- Q2 2026: đang cập nhật — `but_viet.sdata.but_bi` có data thực ✅, các category/sub còn lại chờ ⬜
-- MONTHLY Q2: chờ data thực tế ⬜
+- Q2 2026: data thực tế ✅ (Tiki đã loại bỏ khỏi platform breakdown, TikTok Market Share tính lại theo mẫu số mới)
+- YTD H1 2026: gộp từ Q1+Q2 ✅ — xem cách tính tại các chỉ số phái sinh bên dưới
+- MONTHLY Q2 (và do đó YTD Apr-Jun): chờ data thực tế ⬜ — trend chart tạm thời chỉ có Jan-Mar
 - Phân khúc giá theo nền tảng (Lazada, TikTok): chưa có (`price[].l` và `price[].t` đang là `0`) ⬜
+- Màu thương hiệu: đã chuẩn hoá theo Q1 2026, xem [.claude/rules/brand_colors.md](rules/brand_colors.md)
