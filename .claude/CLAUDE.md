@@ -57,6 +57,7 @@ var MONTHLY = [{ m: 'Apr', rv, pre_rv, ts, pre_ts }, ...]; // 3 tháng/quý
 | **Tên thương hiệu** | `'Thiên Long'` (có dấu), không phải `'Thien Long'` |
 | **Thứ tự cột bar chart** | Cột Previous (năm trước) bên TRÁI, Current (năm nay) bên PHẢI |
 | **Format đơn vị** | `Tỷ`, `Tr`, `Nghìn`, `%`, `pp` — giữ nhất quán |
+| **Màu thương hiệu (`brand[].c`)** | 1 tên = 1 màu duy nhất, không phân biệt hoa/thường, chuẩn theo Q1 2026 — xem [.claude/rules/brand_colors.md](.claude/rules/brand_colors.md) |
 
 ## Danh mục sản phẩm (key mapping)
 
