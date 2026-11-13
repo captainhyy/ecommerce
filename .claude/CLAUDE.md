@@ -2,106 +2,108 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-## Running the Dashboard
+## Kiến trúc
 
-**Bắt buộc dùng Live Server** — không mở `file:///` trực tiếp vì trình duyệt chặn dynamic `<script>` loading do CORS.
+- **HTML/JS thuần + Tailwind CSS (Play CDN) + Chart.js 4 (CDN)**. Không build tool, không `package.json`. UI nằm trong `index.html` (ở gốc repo). Bản giao diện cũ (2 slide, CSS tự viết): `index_legacy.html`.
+- **Data 2 lớp:**
+  - `data/2026/ecom_data_<kỳ>.js`: chỉ **số gốc** lấy từ Metric.
+  - `data/ecom_engine.js`: chuyển số gốc thành `PERIOD`, `CAT`, `MONTHLY` mà `index.html` vẽ. Engine tính mọi chỉ số phái sinh, format đơn vị, tab "Tất cả" và kỳ YTD.
+  - Dùng chung: `data/catalog.js` (category, sub-category, sàn, 18 khoảng giá), `data/brand_colors.js` (màu thương hiệu).
+- **Không có lệnh build/lint/test.** Kiểm tra bằng mắt qua Live Server. Kiểm tra file data bằng `check_data.js` (xem "Cập nhật dữ liệu").
+- **1 trang dashboard** (thiết kế lại 2026-11-13): header (trái: tên + scope đang xem; phải: chọn kỳ, không có Export) → 4 KPI (Gross, Units, Storefronts, TikTok Share) → cột trái (xếp hạng category/sub-category, thị phần thương hiệu) + cột phải (trend theo quý/tháng, doanh số theo sàn, phân khúc giá) → bảng Top SKU.
+- **Key Insights** (card ngay dưới 4 KPI): `buildInsights()` trong `index.html` tự sinh tối đa 6 ý từ số, cho mọi kỳ và scope. Chỉ dùng số đã hiện trên trang. Không có phần Implication (người dùng bỏ, 2026-11-13).
+- Đổi kỳ không tải lại trang: `switchPeriod()` dựng kỳ mới bằng `ECOM.build()` (có cache `QB`), làm mờ rồi vẽ lại các khối `.fade-target`, và ghi `?p=` bằng `history.pushState` (nút Back chạy được). Kỳ chưa được nạp → tải lại trang như cũ.
+- `index.html` nạp file data của **mọi kỳ trong `DATASETS`** để vẽ trend theo quý. Nó dùng `RAW` của `ECOM.build()` và `ECOM.aggregate()` để lấy số gốc cho biểu đồ.
+- **Deploy:** GitHub Pages qua `.github/workflows/static.yml`. Push lên `master` → tự deploy **toàn bộ repo**, công khai. Vì vậy `raw/` nằm trong `.gitignore`.
+
+## Chạy dashboard
+
+Bắt buộc qua HTTP server. Mở `file:///` thì trình duyệt chặn việc nạp file data.
 
 ```bash
-# VS Code: Dùng extension "Live Server" (chuột phải index.html → Open with Live Server)
-# Hoặc Python:
-python -m http.server 8000
-# Truy cập: http://localhost:8000/
+python -m http.server 8000      # hoặc VS Code Live Server
+# http://localhost:8000/?p=q2
 ```
 
-**URL params để test:**
-- `?p=q1` — xem Q1 2026
-- `?p=q2` — xem Q2 2026
-- `?p=ytdh1` — xem YTD H1 2026 (Q1+Q2 gộp)
-- `?cat=but_viet&sub=but_bi` — filter category/sub-category
+| Param | Ý nghĩa |
+|---|---|
+| `?p=q1` / `q2` / `q3` / `ytdh1` | Kỳ báo cáo → nạp `data/2026/ecom_data_<p>.js`. Không có `p` → `q1`. `p` lạ → trang báo lỗi. |
+| `?cat=but_viet&sub=but_bi` | Lọc category / sub-category |
+
+Tab kỳ trên giao diện lấy từ mảng `DATASETS` trong `index.html`. Một kỳ có file data nhưng chưa có trong `DATASETS` vẫn xem được qua `?p=`.
 
 ## Cập nhật dữ liệu
 
-Dùng workflow `/update_ecom_data` — xem hướng dẫn đầy đủ tại [.claude/workflows/update_ecom_data.md](.claude/workflows/update_ecom_data.md).
+Dùng skill **`/update-ecom-from-raw`** ([.claude/skills/update-ecom-from-raw/](skills/update-ecom-from-raw/SKILL.md)).
 
-Tóm tắt: người dùng để file Excel vào `input/` theo quy ước `{cate}_{subcate}.xlsx` (ví dụ `butviet_butbi.xlsx`) → AI đọc sheet `Update_Data` → map vào đúng section trong `data/2026/ecom_data_qN.js`.
+1. Người dùng đặt file xuất từ Metric vào `raw/<cate>_<sub>/` (vd `raw/but-viet_all/`, `raw/hoc-cu_balo/`): ảnh chụp trang "Báo cáo Phân tích thị trường", `Phân tích sâu Mức giá *.xlsx`, `Phân tích sâu Thương hiệu *.xlsx`, `metric-vn-product-list-*.xlsx`.
+2. Skill đọc file, xác định kỳ từ ngày trong file, lấy số gốc và ghi vào đúng scope.
+3. Kiểm tra: `node .claude/skills/update-ecom-from-raw/scripts/check_data.js data/2026/ecom_data_<kỳ>.js`
 
-## Kiến trúc quan trọng
+Nguồn và cấu trúc từng trường: [reference.md](skills/update-ecom-from-raw/reference.md).
 
-### Multi-Period Flow
+## File data `data/2026/ecom_data_<kỳ>.js`
 
-```
-?p=q1  → load ecom_data_q1.js → render trực tiếp
-?p=q2  → load ecom_data_q2.js → render trực tiếp
-```
-
-### Cấu trúc data file (`ecom_data_qN.js`)
-
-Mỗi file khai báo 3 biến top-level — **BẮT BUỘC dùng `var`**, KHÔNG dùng `const`:
+Cấu trúc đầy đủ, đơn vị và nguồn từng trường: [reference.md](skills/update-ecom-from-raw/reference.md). Tóm tắt:
 
 ```javascript
-var PERIOD = { cur: 'Q2 2026', pre: 'Q2 2025', label: 'Strategic Report Q2 2026' };
-var CAT = { but_viet, hoc_cu, my_thuat, van_phong_pham, all };
-var MONTHLY = [{ m: 'Apr', rv, pre_rv, ts, pre_ts }, ...]; // 3 tháng/quý
+var ECOM_DATA = ECOM_DATA || {};
+ECOM_DATA.q3 = {
+  period: { cur: 'Q3 2026', pre: 'Q3 2025', label: 'Strategic Report Q3 2026' },
+  monthly: [],
+  cats: {
+    but_viet: { all: { gross, units, stores, plat, brand, price, prod }, but_bi: {...}, but_gel: {...} },
+    ...
+  }
+};
 ```
 
-### Thêm quý mới (ví dụ Q3)
+- Mỗi category bắt buộc có scope `all`. Category chưa có `all` thì không khai báo.
+- Không lưu: chuỗi đã format, `kpi`/`dkpi`, % thương hiệu, dòng `Others`, màu, tên/icon, `CAT.all`.
+- Kỳ YTD (`ecom_data_ytdh1.js`) chỉ có `period` và `parts: ['q1', 'q2']`. Engine tự cộng; sửa số quý thì YTD tự cập nhật.
 
-1. Copy `ecom_data_q1.js` → `ecom_data_q3.js`, cập nhật PERIOD và MONTHLY
-2. Thêm `{ p: 'q3', label: 'Q3 2026' }` vào mảng `DATASETS` trong `index.html`
+### Thêm kỳ mới
+
+Skill tự tạo file kỳ mới khi gặp data của kỳ chưa có file (xem SKILL.md). Sau đó chỉ thêm `{ p: 'q3', label: 'Q3 2026' }` vào `DATASETS` khi người dùng đồng ý, vì tab sẽ hiện công khai.
 
 ## Quy tắc bắt buộc
 
 | Quy tắc | Chi tiết |
-|---------|---------|
-| **`var` không `const`** | Tất cả khai báo top-level trong file data |
-| **Không sửa `index.html`** | Trừ khi thêm kỳ mới vào DATASETS hoặc được yêu cầu rõ ràng |
-| **Tên thương hiệu** | `'Thiên Long'` (có dấu), không phải `'Thien Long'` |
-| **Thứ tự cột bar chart** | Cột Previous (năm trước) bên TRÁI, Current (năm nay) bên PHẢI |
-| **Format đơn vị** | `Tỷ`, `Tr`, `Nghìn`, `%`, `pp` — giữ nhất quán |
-| **Màu thương hiệu (`brand[].c`)** | 1 tên = 1 màu duy nhất, không phân biệt hoa/thường, chuẩn theo Q1 2026 — xem [.claude/rules/brand_colors.md](.claude/rules/brand_colors.md) |
+|---|---|
+| `var`, không `const` | Mọi khai báo top-level trong file data và file dùng chung trong `data/` |
+| Chỉ lưu số gốc | File data không chứa chuỗi đã format hay chỉ số phái sinh |
+| Không sửa `index.html` | Trừ khi thêm kỳ vào `DATASETS` hoặc người dùng yêu cầu rõ |
+| Tên thương hiệu | `'Thiên Long'` có dấu. Màu: `data/brand_colors.js`. Biến thể tên: [rules/brand_colors.md](rules/brand_colors.md) |
+| Bar chart | Cột năm trước bên trái, năm nay bên phải |
+| Đơn vị | `Tỷ`, `Tr`, `Triệu`, `Nghìn`, `K`, `%`, `pp` |
+| Nền tảng | Shopee, TikTok Shop, Lazada. Không có Tiki (bỏ từ Q2 2026) |
 
-## Danh mục sản phẩm (key mapping)
+## Chỉ số phái sinh
 
-| Key | Tên | Sub-categories |
-|-----|-----|----------------|
+Chỉ có các chỉ số dưới đây. Tất cả do `data/ecom_engine.js` tính; không ghi vào file data.
+
+- **TikTok Market Share** = doanh số TikTok ÷ Gross Sales. **Growth** = share đã làm tròn − share cùng kỳ đã làm tròn, format `+X.Xpp`.
+- **Top 10 Contribution** = tổng doanh thu top 10 SKU ÷ Gross Sales; `sub: 'of Total Gross Sales'`.
+- **Leading Brand** = thương hiệu thị phần cao nhất; `sub: '{n}/10 Top SKU Spots'`.
+- **Thị phần thương hiệu** = doanh số thương hiệu ÷ Gross Sales của scope (không dùng % trong top 10 của Metric). Lấy top 5; `Others` = 100% − top 5.
+
+## Danh mục (key)
+
+Danh sách đầy đủ, tên và icon: `data/catalog.js`. Pill sub-category chỉ hiện khi kỳ đó có data (vd chỉ Q1 có `chi_mau`).
+
+| Key | Tên | Sub-category |
+|---|---|---|
 | `but_viet` | Bút Viết | `but_bi`, `but_gel` |
 | `hoc_cu` | Học Cụ | `may_tinh`, `tap_vo`, `balo`, `but_chi`, `gom` |
-| `my_thuat` | Mỹ Thuật | `sap_mau`, `acrylic`, `long_mt`, `chi_mau` |
-| `van_phong_pham` | Văn Phòng Phẩm | `bang_keo`, `keo_dan`, `ghim_kep` |
-| `all` | Tất cả | *(tổng hợp từ tất cả category)* |
+| `my_thuat` | Mỹ Thuật | `sap_mau`, `acrylic`, `long_mt`, `chi_mau` (chỉ Q1). Không có Màu Nước (`mau_nuoc`): người dùng bỏ ở mọi kỳ, 2026-11-13 |
+| `van_phong_pham` | Văn Phòng Phẩm | `da_quang`, `long_bang`, `long_dau`, `xoa_nuoc`, `file_folder`, `giay_copy` |
 
-## Chỉ số phái sinh (tính khi cập nhật data)
-
-- **TikTok Market Share** = Doanh số TikTok / Tổng doanh số kỳ hiện tại
-- **Top 10 Contribution** = Tổng top 10 SKU / Tổng doanh số; `sub` = `"of Total Gross Sales"`
-- **Leading Brand** = thương hiệu thị phần cao nhất; `sub` = `"{n}/10 Top SKU Spots"`
-- **TikTok Share growth** = share hiện tại − share cùng kỳ, format `"+X.Xpp"`
-- KHÔNG tự tính chỉ số khác ngoài danh sách này
-
-## Cấu trúc thư mục
-
-```
-Ecom/
-├── .claude/
-│   ├── CLAUDE.md                           # File này
-│   ├── rules/brand_colors.md               # Quy tắc màu thương hiệu
-│   └── workflows/update_ecom_data.md       # Workflow cập nhật data
-├── .github/workflows/static.yml            # Deploy GitHub Pages
-├── input/                                  # Excel đầu vào: {cate}_{subcate}.xlsx
-├── data/2026/
-│   ├── ecom_data_q1.js                     # Data Q1 (thực tế)
-│   ├── ecom_data_q2.js                     # Data Q2 (thực tế)
-│   └── ecom_data_ytdh1.js                  # Data YTD H1 (Q1+Q2 gộp)
-├── index.html                              # Dashboard (UI + data loader) — ở gốc repo để phục vụ GitHub Pages
-├── templates/data_update_template.xlsx     # Template Excel mẫu
-├── KNOWLEDGE.md / README.md
-```
+Tên folder `raw/` → key: đổi `-` thành `_` (`raw/van-phong-pham_long-bang/` → `cats.van_phong_pham.long_bang`). Folder không theo quy ước (vd `raw/vpp/but long bang`) → đối chiếu `data/catalog.js`.
 
 ## Trạng thái hiện tại
 
-- Q1 2026: data thực tế ✅
-- Q2 2026: data thực tế ✅ (Tiki đã loại bỏ khỏi platform breakdown, TikTok Market Share tính lại theo mẫu số mới)
-- YTD H1 2026: gộp từ Q1+Q2 ✅ — xem cách tính tại các chỉ số phái sinh bên dưới
-- MONTHLY Q2 (và do đó YTD Apr-Jun): chờ data thực tế ⬜ — trend chart tạm thời chỉ có Jan-Mar
-- Phân khúc giá theo nền tảng (Lazada, TikTok): chưa có (`price[].l` và `price[].t` đang là `0`) ⬜
-- Màu thương hiệu: đã chuẩn hoá theo Q1 2026, xem [.claude/rules/brand_colors.md](rules/brand_colors.md)
+- Q1 2026 ✅, Q2 2026 ✅, YTD H1 2026 (Q1+Q2) ✅.
+- Q3 2026 ✅: `ecom_data_q3.js` có đủ 4 category và 16 sub-category (nguồn `raw/{but viet, hoc cu, my thuat, vpp}/*`). Đã thêm vào `DATASETS` (chưa push). Không làm `my_thuat.mau_nuoc` (người dùng bỏ ở Q3 ngày 2026-11-12; đã xoá khỏi Q2 và `data/catalog.js` ngày 2026-11-13). Một số thương hiệu có doanh số cùng kỳ `null` (Metric ghi N/A); giữ nguyên theo quyết định 2026-11-12.
+- Q2 2026 `my_thuat.long_mt`, `hoc_cu.balo`, `hoc_cu.but_chi` đã làm lại từ file raw Q2 (2026-11-13) ✅. Q2 không còn lỗi data cũ đã biết.
+- `MONTHLY` Q2, Q3 chưa có ⬜. Trend chart YTD chỉ có Jan–Mar.
+- Phân khúc giá chỉ có tổng mọi sàn; chưa tách theo Lazada/TikTok ⬜.

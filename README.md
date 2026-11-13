@@ -1,55 +1,54 @@
 # Ecom Dashboard — Thiên Long Group
 
-Dashboard tương tác báo cáo thương mại điện tử, phân tích hiệu suất bán hàng trên Shopee, TikTok Shop, Lazada, Tiki theo từng quý và lũy kế YTD.
+Dashboard báo cáo thương mại điện tử: hiệu suất bán hàng trên Shopee, TikTok Shop và Lazada theo quý và lũy kế YTD, so với cùng kỳ năm trước.
 
-**Đối tượng:** Ban điều hành & đội Business Intelligence — Thiên Long Group  
-**Trạng thái:** Q1 2026 ✅ | Q2 2026 ⬜ (chờ data thực tế)
+**Đối tượng:** Ban điều hành và đội Business Intelligence — Thiên Long Group
+**Trạng thái:** Q1 2026 ✅ · Q2 2026 ✅ · YTD H1 2026 ✅ · Q3 2026 ⬜ (đang cập nhật)
 
----
+## Xem dashboard
 
-## Cấu trúc thư mục
+- Bản online: GitHub Pages, tự cập nhật khi push lên `master`.
+- Chạy local (bắt buộc qua HTTP server, không mở file trực tiếp):
+
+  ```bash
+  python -m http.server 8000
+  # http://localhost:8000/?p=q2
+  ```
+
+  `?p=q1` | `q2` | `ytdh1` chọn kỳ. `?cat=but_viet&sub=but_bi` lọc danh mục. `?slide=2` mở slide 2.
+
+## Cập nhật dữ liệu mỗi quý
+
+1. Trên Metric, phân tích từng danh mục / phân khúc cho đúng quý cần báo cáo.
+2. Tạo folder `raw/<danh-mục>_<phân-khúc>/`, ví dụ `raw/but-viet_all/` (cả danh mục) hoặc `raw/but-viet_but-bi/` (phân khúc Bút Bi).
+3. Đặt vào folder:
+   - Ảnh chụp toàn trang "Báo cáo Phân tích thị trường".
+   - `Phân tích sâu Mức giá *.xlsx`
+   - `Phân tích sâu Thương hiệu *.xlsx`
+   - `metric-vn-product-list-*.xlsx` (top 10 sản phẩm)
+4. Trong Claude Code, gõ `/update-ecom-from-raw` kèm tên folder. Claude ghi data vào `data/2026/ecom_data_<kỳ>.js` và báo lại những gì còn thiếu.
+5. Xem lại trên local, rồi commit và push.
+
+Folder `raw/` không được đưa lên git (repo được public qua GitHub Pages).
+
+## Cấu trúc
 
 ```
 Ecom/
-├── .claude/
-│   └── workflows/
-│       └── update_ecom_data.md     # Workflow hướng dẫn AI cập nhật data
+├── index.html                 # Dashboard (UI)
 ├── data/
-│   ├── q1_2026/                    # Raw input Q1: CSV, ảnh, text nguồn
-│   └── q2_2026/                    # Raw input Q2: CSV, ảnh, text nguồn
-├── reports/
-│   └── 2026/
-│       ├── index.html              # Dashboard chính (UI + YTD merger)
-│       ├── ecom_data_q1.js         # Data Q1 2026 (thực tế)
-│       ├── ecom_data_q2.js         # Data Q2 2026 (mock, chờ cập nhật)
-│       └── README.md               # Hướng dẫn kỹ thuật dashboard
-├── templates/
-│   └── data_update_template.xlsx   # Template Excel nhập liệu
-├── CLAUDE.md                       # Hướng dẫn cho Claude AI
-└── KNOWLEDGE.md                    # Knowledge base kiến trúc dự án
+│   ├── 2026/                  # 1 file số gốc / kỳ: ecom_data_q1.js, q2, q3; ytdh1 = q1 + q2
+│   ├── ecom_engine.js         # Số gốc → số hiển thị; tính chỉ số, tab "Tất cả", YTD
+│   ├── catalog.js             # Category, sub-category, sàn, khoảng giá
+│   └── brand_colors.js        # Màu chuẩn của thương hiệu (nguồn duy nhất)
+├── raw/                       # File xuất từ Metric (local, không commit)
+├── .claude/
+│   ├── CLAUDE.md              # Hướng dẫn kỹ thuật cho Claude Code
+│   ├── rules/brand_colors.md  # Quy tắc tên + màu thương hiệu
+│   └── skills/update-ecom-from-raw/   # Quy trình cập nhật data
+├── KNOWLEDGE.md               # Bối cảnh và các quyết định nghiệp vụ
+└── .github/workflows/static.yml       # Deploy GitHub Pages
 ```
-
----
-
-## Chạy dashboard
-
-Bắt buộc dùng Live Server (không mở `file:///` do CORS):
-
-```bash
-# Python
-python -m http.server 8000
-# Truy cập: http://localhost:8000/reports/2026/
-```
-
-URL params: `?p=q1` | `?p=q2` | `?p=ytd` | `?cat=but_viet&sub=but_bi`
-
----
-
-## Cập nhật data
-
-1. Để raw data (CSV, ảnh, text) vào `data/q2_2026/`
-2. Gọi workflow `/update_ecom_data` — AI tự map vào `ecom_data_q2.js`
-3. YTD tự tính lại runtime, không cần chỉnh thêm
 
 ---
 

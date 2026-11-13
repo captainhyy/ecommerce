@@ -1,5 +1,9 @@
-# Input data files (raw Excel uploads)
-input/*.xlsx
+# Raw source data (Metric exports, screenshots) — không đưa lên repo vì GitHub Pages public toàn bộ repo
+raw/
+
+# Claude Code local files
+.claude/settings.local.json
+.claude/scheduled_tasks.lock
 
 # OS files
 .DS_Store

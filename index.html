@@ -1,1802 +1,745 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
 
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Thien Long Group — Sector Performance Analysis Q1 2026</title>
-  <meta name="description"
-    content="Strategic Report Q1 2026: E-commerce Sector Performance Analysis for Thien Long Group">
-  <!-- Open Graph / Social sharing -->
+  <title>Thiên Long Group — E-commerce Sales Dashboard</title>
+  <meta name="description" content="E-commerce Sector Performance Dashboard for Thien Long Group: gross sales, units, platform mix, brand share, price segments and top SKUs.">
   <meta property="og:type" content="website">
-  <meta property="og:title" content="Thiên Long Group — Sector Performance Analysis">
-  <meta property="og:description" content="Strategic E-commerce Report: Market share, brand performance, platform breakdown, and top SKU rankings across key stationery categories.">
+  <meta property="og:title" content="Thiên Long Group — E-commerce Sales Dashboard">
+  <meta property="og:description" content="Market share, brand performance, platform breakdown, and top SKU rankings across key stationery categories.">
   <meta property="og:image" content="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/Thien_Long_Logo.svg/320px-Thien_Long_Logo.svg.png">
   <meta property="og:locale" content="vi_VN">
-  <link
-    href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap"
-    rel="stylesheet">
-  <style>
-    :root {
-      --pri: #1a56db;
-      --pri-l: #3b82f6;
-      --pri-d: #1e40af;
-      --acc: #0ea5e9;
-      --ok: #10b981;
-      --ok-l: #d1fae5;
-      --err: #ef4444;
-      --warn: #f59e0b;
-      --org: #f97316;
-      --bg: #f0f4ff;
-      --sf: rgba(255, 255, 255, .82);
-      --sf-solid: #fff;
-      --sf2: #f8fafc;
-      --tx: #0f172a;
-      --tx2: #64748b;
-      --tx3: #94a3b8;
-      --bd: rgba(226, 232, 240, .7);
-      --sh-s: 0 1px 3px rgba(0, 0, 0, .04), 0 1px 2px rgba(0, 0, 0, .03);
-      --sh: 0 4px 16px rgba(0, 0, 0, .06), 0 1px 3px rgba(0, 0, 0, .04);
-      --sh-l: 0 20px 50px rgba(0, 0, 0, .08), 0 8px 20px rgba(0, 0, 0, .04);
-      --r: 18px;
-      --r-s: 12px;
-      --r-x: 8px;
-      --tr: all .35s cubic-bezier(.4, 0, .2, 1);
-      --glass: saturate(180%) blur(14px)
-    }
 
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box
-    }
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 
-    body {
-      font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
-      background: var(--bg);
-      color: var(--tx);
-      overflow-x: hidden;
-      -webkit-font-smoothing: antialiased;
-      min-height: 100vh
-    }
-
-    .slide-container {
-      width: 100%;
-      min-height: 100vh;
-      position: relative
-    }
-
-    .slide {
-      display: none;
-      min-height: 100vh;
-      padding: 28px 44px;
-      animation: slideEnter .7s cubic-bezier(.4, 0, .2, 1);
-      position: relative;
-      overflow: hidden;
-      flex-direction: column
-    }
-
-    .slide.active {
-      display: flex
-    }
-
-    @keyframes slideEnter {
-      from {
-        opacity: 0;
-        transform: translateY(24px) scale(.995)
+  <!-- Tailwind CSS (Play CDN) -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'ui-monospace', 'monospace']
+          },
+          colors: {
+            brand: { 50: '#eff6ff', 100: '#dbeafe', 200: '#bfdbfe', 300: '#93c5fd', 500: '#3b82f6', 600: '#1a56db', 700: '#1e40af', 900: '#0b1f4d' }
+          },
+          boxShadow: {
+            soft: '0 1px 2px rgba(15,23,42,.04), 0 6px 20px -6px rgba(15,23,42,.08)'
+          }
+        }
       }
-
-      to {
-        opacity: 1;
-        transform: translateY(0) scale(1)
-      }
-    }
-
-    /* MESH GRADIENT BACKGROUND */
-    .bg-dec {
-      position: absolute;
-      border-radius: 50%;
-      filter: blur(120px);
-      pointer-events: none;
-      z-index: 0;
-      will-change: transform
-    }
-
-    .bg-dec.blue {
-      background: linear-gradient(135deg, #3b82f6, #6366f1);
-      width: 700px;
-      height: 700px;
-      top: -250px;
-      right: -150px;
-      opacity: .12;
-      animation: meshFloat 20s ease-in-out infinite
-    }
-
-    .bg-dec.cyan {
-      background: linear-gradient(135deg, #0ea5e9, #06b6d4);
-      width: 500px;
-      height: 500px;
-      bottom: -150px;
-      left: -100px;
-      opacity: .1;
-      animation: meshFloat 25s ease-in-out infinite reverse
-    }
-
-    @keyframes meshFloat {
-
-      0%,
-      100% {
-        transform: translate(0, 0) rotate(0deg)
-      }
-
-      25% {
-        transform: translate(30px, -20px) rotate(5deg)
-      }
-
-      50% {
-        transform: translate(-20px, 30px) rotate(-3deg)
-      }
-
-      75% {
-        transform: translate(15px, 15px) rotate(2deg)
-      }
-    }
-
-    /* HEADER */
-    .header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 16px;
-      position: relative;
-      z-index: 1
-    }
-
-    .header-left {
-      display: flex;
-      flex-direction: column;
-      gap: 4px
-    }
-
-    .badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      color: var(--pri)
-    }
-
-    .badge::before {
-      content: '';
-      display: block;
-      width: 28px;
-      height: 4px;
-      background: linear-gradient(90deg, var(--pri), #6366f1, var(--acc));
-      border-radius: 2px;
-      background-size: 200% 100%;
-      animation: shimmer 3s ease-in-out infinite
-    }
-
-    @keyframes shimmer {
-
-      0%,
-      100% {
-        background-position: 0% 50%
-      }
-
-      50% {
-        background-position: 100% 50%
-      }
-    }
-
-    .header h1 {
-      font-size: 28px;
-      font-weight: 900;
-      letter-spacing: -.5px;
-      line-height: 1.1;
-      background: linear-gradient(135deg, var(--tx), var(--pri-d));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text
-    }
-
-    .header .subtitle {
-      font-size: 13px;
-      color: var(--tx2)
-    }
-
-    .nav-tabs {
-      display: flex;
-      gap: 4px;
-      background: var(--sf);
-      backdrop-filter: var(--glass);
-      -webkit-backdrop-filter: var(--glass);
-      padding: 4px;
-      border-radius: 14px;
-      box-shadow: var(--sh-s);
-      border: 1px solid var(--bd)
-    }
-
-    .nav-tab {
-      padding: 10px 20px;
-      border-radius: 10px;
-      font-size: 13px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: var(--tr);
-      border: none;
-      background: transparent;
-      color: var(--tx2);
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      position: relative;
-      overflow: hidden
-    }
-
-    .nav-tab.active {
-      background: linear-gradient(135deg, var(--pri), #4f46e5);
-      color: #fff;
-      box-shadow: 0 4px 16px rgba(26, 86, 219, .35), inset 0 1px 0 rgba(255, 255, 255, .15)
-    }
-
-    .nav-tab:hover:not(.active) {
-      background: rgba(59, 130, 246, .06);
-      color: var(--tx)
-    }
-
-    .nav-tab::after {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(135deg, transparent, rgba(255, 255, 255, .1));
-      opacity: 0;
-      transition: var(--tr)
-    }
-
-    .nav-tab:hover::after {
-      opacity: 1
-    }
-
-    /* FILTERS */
-    .filter-bar {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      margin-bottom: 10px;
-      position: relative;
-      z-index: 1;
-      flex-wrap: wrap
-    }
-
-    .filter-label {
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: .5px;
-      color: var(--tx2);
-      text-transform: uppercase;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      white-space: nowrap
-    }
-
-    .filter-pills {
-      display: flex;
-      gap: 6px;
-      flex-wrap: wrap
-    }
-
-    .filter-pill {
-      padding: 7px 16px;
-      border-radius: 100px;
-      font-size: 12px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: var(--tr);
-      border: 1.5px solid var(--bd);
-      background: rgba(255, 255, 255, 0.95);
-      color: var(--tx2);
-      display: flex;
-      align-items: center;
-      gap: 5px;
-      white-space: nowrap;
-      position: relative
-    }
-
-    .filter-pill:hover {
-      border-color: var(--pri-l);
-      color: var(--pri);
-      background: rgba(239, 246, 255, .9);
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(59, 130, 246, .12)
-    }
-
-    .filter-pill.active {
-      background: linear-gradient(135deg, var(--pri), #4f46e5);
-      color: #fff;
-      border-color: transparent;
-      box-shadow: 0 4px 16px rgba(26, 86, 219, .3), inset 0 1px 0 rgba(255, 255, 255, .15)
-    }
-
-    .filter-pill .pi {
-      font-size: 13px
-    }
-
-    .filter-pill:not(.active) .pc {
-      background: var(--bg);
-      color: var(--tx3)
-    }
-
-    .filter-pill .pc {
-      font-size: 9px;
-      font-weight: 700;
-      padding: 2px 6px;
-      border-radius: 50px;
-      background: rgba(255, 255, 255, .25);
-      min-width: 18px;
-      text-align: center
-    }
-
-    /* KPI */
-    .kpi-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 12px;
-      margin-bottom: 16px;
-      position: relative;
-      z-index: 1
-    }
-
-    .kpi-card {
-      background: var(--sf);
-      backdrop-filter: var(--glass);
-      -webkit-backdrop-filter: var(--glass);
-      border-radius: var(--r);
-      padding: 16px 18px;
-      border: 1px solid var(--bd);
-      box-shadow: var(--sh-s);
-      transition: var(--tr);
-      position: relative;
-      overflow: hidden
-    }
-
-    .kpi-card:hover {
-      transform: translateY(-4px) scale(1.01);
-      box-shadow: var(--sh-l);
-      border-color: rgba(59, 130, 246, .3)
-    }
-
-    .kpi-card::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 3px;
-      background: linear-gradient(90deg, var(--pri), #6366f1, var(--acc));
-      opacity: 0;
-      transition: var(--tr);
-      background-size: 200% 100%;
-      animation: shimmer 3s ease-in-out infinite
-    }
-
-    .kpi-card:hover::before {
-      opacity: 1
-    }
-
-    .kpi-card::after {
-      content: '';
-      position: absolute;
-      top: 0;
-      right: 0;
-      width: 100px;
-      height: 100px;
-      background: radial-gradient(circle, rgba(59, 130, 246, .04), transparent);
-      border-radius: 50%;
-      pointer-events: none
-    }
-
-    .kpi-icon {
-      width: 36px;
-      height: 36px;
-      border-radius: 10px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 15px;
-      margin-bottom: 8px;
-      transition: var(--tr)
-    }
-
-    .kpi-card:hover .kpi-icon {
-      transform: scale(1.1)
-    }
-
-    .kpi-icon.blue {
-      background: linear-gradient(135deg, #eff6ff, #dbeafe);
-      color: var(--pri)
-    }
-
-    .kpi-icon.green {
-      background: linear-gradient(135deg, #f0fdf4, #dcfce7);
-      color: var(--ok)
-    }
-
-    .kpi-icon.purple {
-      background: linear-gradient(135deg, #faf5ff, #f3e8ff);
-      color: #8b5cf6
-    }
-
-    .kpi-icon.orange {
-      background: linear-gradient(135deg, #fff7ed, #ffedd5);
-      color: var(--org)
-    }
-
-    .kpi-icon.teal {
-      background: linear-gradient(135deg, #f0fdfa, #ccfbf1);
-      color: #14b8a6
-    }
-
-    .kpi-top {
-      display: flex;
-      align-items: center;
-      justify-content: space-between
-    }
-
-    .kpi-growth {
-      font-size: 11px;
-      font-weight: 700;
-      color: var(--ok);
-      background: var(--ok-l);
-      padding: 2px 8px;
-      border-radius: 20px;
-      display: flex;
-      align-items: center;
-      gap: 2px;
-      letter-spacing: .3px
-    }
-
-    .kpi-growth.down {
-      color: var(--err);
-      background: #fee2e2
-    }
-
-    .kpi-label {
-      font-size: 10px;
-      font-weight: 700;
-      letter-spacing: 1px;
-      text-transform: uppercase;
-      color: var(--tx2);
-      margin-bottom: 3px
-    }
-
-    .kpi-value {
-      font-size: 24px;
-      font-weight: 800;
-      letter-spacing: -.5px;
-      line-height: 1.1;
-      color: var(--tx)
-    }
-
-    .kpi-value .unit {
-      font-size: 14px;
-      font-weight: 600;
-      color: var(--tx3)
-    }
-
-    .kpi-sub {
-      font-size: 10px;
-      color: var(--tx3);
-      margin-top: 3px;
-      font-weight: 500
-    }
-
-    /* CARDS & GRIDS */
-    .content-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 16px;
-      position: relative;
-      z-index: 1;
-      margin-bottom: 16px
-    }
-
-    .content-grid.full {
-      grid-template-columns: 1fr
-    }
-
-    .card {
-      background: var(--sf);
-      backdrop-filter: var(--glass);
-      -webkit-backdrop-filter: var(--glass);
-      border-radius: var(--r);
-      padding: 20px;
-      border: 1px solid var(--bd);
-      box-shadow: var(--sh-s);
-      transition: var(--tr)
-    }
-
-    .card:hover {
-      box-shadow: var(--sh);
-      border-color: rgba(59, 130, 246, .15)
-    }
-
-    .card-hdr {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      margin-bottom: 14px
-    }
-
-    .card-hdr .ic {
-      font-size: 16px
-    }
-
-    .card-title {
-      font-size: 12px;
-      font-weight: 800;
-      letter-spacing: 1px;
-      text-transform: uppercase;
-      color: var(--tx)
-    }
-
-    /* PLATFORM COMPARISON BARS */
-    .plat-item {
-      margin-bottom: 14px;
-      padding: 8px 10px;
-      border-radius: var(--r-s);
-      transition: var(--tr)
-    }
-
-    .plat-item:last-child {
-      margin-bottom: 0
-    }
-
-    .plat-item:hover {
-      background: rgba(59, 130, 246, .03)
-    }
-
-    .plat-head {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 5px
-    }
-
-    .plat-name {
-      font-size: 13px;
-      font-weight: 600;
-      display: flex;
-      align-items: center;
-      gap: 6px
-    }
-
-    .plat-name .dot {
-      width: 10px;
-      height: 10px;
-      border-radius: 3px;
-      flex-shrink: 0;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, .15)
-    }
-
-    .plat-change {
-      font-size: 11px;
-      font-weight: 700;
-      color: var(--ok);
-      display: flex;
-      align-items: center;
-      gap: 3px;
-      padding: 2px 8px;
-      border-radius: 6px;
-      background: rgba(16, 185, 129, .08)
-    }
-
-    .plat-change.down {
-      color: var(--err);
-      background: rgba(239, 68, 68, .08)
-    }
-
-    .plat-bars {
-      display: flex;
-      flex-direction: column;
-      gap: 3px
-    }
-
-    .plat-bar-row {
-      display: flex;
-      align-items: center;
-      gap: 8px
-    }
-
-    .plat-bar-row .yr {
-      font-size: 11px;
-      font-weight: 500;
-      color: var(--tx3);
-      width: 46px;
-      text-align: right
-    }
-
-    .plat-bar-row .track {
-      flex: 1;
-      height: 8px;
-      background: linear-gradient(90deg, rgba(241, 245, 249, .8), var(--bg));
-      border-radius: 4px;
-      overflow: hidden
-    }
-
-    .plat-bar-row .fill {
-      height: 100%;
-      border-radius: 4px;
-      transition: width 1.2s cubic-bezier(.4, 0, .2, 1)
-    }
-
-    .plat-bar-row .val {
-      font-size: 12px;
-      font-weight: 700;
-      width: 60px;
-      font-family: 'JetBrains Mono', monospace
-    }
-
-    .plat-bar-row.prev .fill {
-      opacity: .3
-    }
-
-    /* BRAND SHARE */
-    .brand-item {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 7px 0;
-      border-bottom: 1px solid var(--bd)
-    }
-
-    .brand-item:last-child {
-      border-bottom: none
-    }
-
-    .brand-rank {
-      font-size: 10px;
-      font-weight: 700;
-      color: var(--tx3);
-      width: 16px;
-      text-align: center
-    }
-
-    .brand-dot {
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
-      flex-shrink: 0
-    }
-
-    .brand-name {
-      font-size: 12px;
-      font-weight: 600;
-      flex: 1;
-      min-width: 0
-    }
-
-    .brand-bar-wrap {
-      width: 120px;
-      display: flex;
-      flex-direction: column;
-      gap: 2px
-    }
-
-    .brand-bar {
-      height: 6px;
-      border-radius: 3px;
-      transition: width 1s ease
-    }
-
-    .brand-bar.prev {
-      opacity: .3
-    }
-
-    .brand-pct {
-      font-size: 11px;
-      font-weight: 700;
-      width: 35px;
-      text-align: right;
-      font-family: 'JetBrains Mono', monospace
-    }
-
-    .brand-chg {
-      font-size: 10px;
-      font-weight: 700;
-      width: 45px;
-      text-align: right
-    }
-
-    .brand-chg.up {
-      color: var(--ok)
-    }
-
-    .brand-chg.down {
-      color: var(--err)
-    }
-
-    .brand-chg.flat {
-      color: var(--tx3)
-    }
-
-    /* DONUT */
-    .donut-wrap {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      margin-bottom: 14px
-    }
-
-    .donut-box {
-      position: relative;
-      width: 160px;
-      height: 160px;
-      margin-bottom: 10px;
-      filter: drop-shadow(0 4px 12px rgba(0, 0, 0, .06))
-    }
-
-    .donut-svg {
-      width: 160px;
-      height: 160px;
-      transform: rotate(-90deg)
-    }
-
-    .donut-seg {
-      transition: stroke-dashoffset 1.2s cubic-bezier(.4, 0, .2, 1);
-      filter: drop-shadow(0 1px 2px rgba(0, 0, 0, .1));
-      cursor: pointer
-    }
-
-    .donut-center {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      text-align: center
-    }
-
-    .donut-center .dv {
-      font-size: 28px;
-      font-weight: 900;
-      line-height: 1
-    }
-
-    .donut-center .dl {
-      font-size: 8px;
-      font-weight: 700;
-      letter-spacing: 1.5px;
-      text-transform: uppercase;
-      margin-top: 2px
-    }
-
-    .brand-legend {
-      width: 100%
-    }
-
-    .brand-legend-item {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 6px 8px;
-      border-bottom: 1px solid rgba(226, 232, 240, .5);
-      border-radius: var(--r-x);
-      transition: var(--tr);
-      margin-bottom: 1px
-    }
-
-    .brand-legend-item:last-child {
-      border-bottom: none
-    }
-
-    .brand-legend-item:hover {
-      background: rgba(59, 130, 246, .04)
-    }
-
-    .bl-left {
-      display: flex;
-      align-items: center;
-      gap: 7px
-    }
-
-    .bl-dot {
-      width: 9px;
-      height: 9px;
-      border-radius: 50%;
-      flex-shrink: 0;
-      box-shadow: 0 1px 3px rgba(0, 0, 0, .15)
-    }
-
-    .bl-name {
-      font-size: 11.5px;
-      font-weight: 500
-    }
-
-    .bl-val {
-      font-size: 11px;
-      font-weight: 600
-    }
-
-    .bl-val.up {
-      color: var(--ok)
-    }
-
-    .bl-val.down {
-      color: var(--err)
-    }
-
-    .bl-val.flat {
-      color: var(--tx)
-    }
-
-    /* PRICE SEGMENTS */
-    .price-grid {
-      display: flex;
-      align-items: flex-end;
-      gap: 6px;
-      height: 140px;
-      padding: 24px 0 10px
-    }
-
-    .price-col {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 4px;
-      height: 100%;
-      transition: var(--tr)
-    }
-
-    .price-col:hover {
-      transform: translateY(-2px)
-    }
-
-    .price-bar-wrap {
-      flex: 1;
-      width: 100%;
-      display: flex;
-      align-items: flex-end;
-      justify-content: center
-    }
-
-    .price-stack {
-      width: 85%;
-      display: flex;
-      flex-direction: column;
-      border-radius: 6px 6px 2px 2px;
-      transition: height 1s cubic-bezier(.4, 0, .2, 1);
-      position: relative;
-      min-height: 4px
-    }
-
-    .price-stack .seg {
-      transition: height .8s ease;
-      border-radius: 6px 6px 2px 2px
-    }
-
-    .price-stack .pv {
-      position: absolute;
-      top: -20px;
-      left: 50%;
-      transform: translateX(-50%);
-      font-size: 11px;
-      font-weight: 500;
-      color: var(--tx2);
-      white-space: nowrap;
-      font-family: 'JetBrains Mono', monospace;
-      text-align: center
-    }
-
-    .price-range {
-      font-size: 11px;
-      font-weight: 500;
-      color: var(--tx3);
-      text-align: center;
-      white-space: nowrap
-    }
-
-    .price-legend {
-      display: flex;
-      gap: 14px;
-      justify-content: flex-end;
-      margin-top: 6px
-    }
-
-    .price-legend .pl-item {
-      display: flex;
-      align-items: center;
-      gap: 4px;
-      font-size: 9px;
-      font-weight: 600;
-      color: var(--tx3)
-    }
-
-    .price-legend .pl-dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 2px
-    }
-
-    /* PRODUCT TABLE */
-    .tbl-wrap {
-      background: var(--sf);
-      backdrop-filter: var(--glass);
-      -webkit-backdrop-filter: var(--glass);
-      border-radius: var(--r);
-      border: 1px solid var(--bd);
-      overflow: hidden;
-      position: relative;
-      z-index: 1;
-      box-shadow: var(--sh-s)
-    }
-
-    .tbl-hdr {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 16px 20px 14px;
-      border-bottom: 1px solid var(--bd);
-      background: linear-gradient(135deg, rgba(59, 130, 246, .03), rgba(99, 102, 241, .02))
-    }
-
-    .tbl-title {
-      font-size: 14px;
-      font-weight: 800;
-      letter-spacing: .5px;
-      color: var(--tx)
-    }
-
-    .tbl-sub {
-      font-size: 10px;
-      color: var(--tx3);
-      font-style: italic
-    }
-
-    .tbl {
-      width: 100%;
-      border-collapse: collapse
-    }
-
-    .tbl thead th {
-      padding: 10px 10px;
-      font-size: 9px;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: .8px;
-      color: var(--tx3);
-      text-align: left;
-      border-bottom: 2px solid var(--bd);
-      background: var(--sf2);
-      position: sticky;
-      top: 0
-    }
-
-    .tbl thead th:last-child,
-    .tbl thead th:nth-child(n+4) {
-      text-align: right
-    }
-
-    .tbl tbody tr {
-      border-bottom: 1px solid rgba(226, 232, 240, .5);
-      transition: all .2s ease
-    }
-
-    .tbl tbody tr:last-child {
-      border-bottom: none
-    }
-
-    .tbl tbody tr:hover {
-      background: linear-gradient(90deg, rgba(59, 130, 246, .04), rgba(99, 102, 241, .02));
-      transform: scale(1.001)
-    }
-
-    .tbl tbody tr:nth-child(-n+3) {
-      background: linear-gradient(90deg, rgba(251, 191, 36, .03), transparent)
-    }
-
-    .tbl tbody tr:nth-child(-n+3):hover {
-      background: linear-gradient(90deg, rgba(59, 130, 246, .06), rgba(251, 191, 36, .03))
-    }
-
-    .tbl td {
-      padding: 10px 10px;
-      vertical-align: middle;
-      font-size: 11.5px
-    }
-
-    .tbl td:last-child,
-    .tbl td:nth-child(n+4) {
-      text-align: right
-    }
-
-    .tbl th:nth-child(n+7),
-    .tbl td:nth-child(n+7) {
-      width: 8.5%;
-    }
-
-    .tbl .rk {
-      width: 32px;
-      text-align: center !important
-    }
-
-    .rk-badge {
-      width: 26px;
-      height: 26px;
-      border-radius: 8px;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 10px;
-      font-weight: 800;
-      color: #fff;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, .15)
-    }
-
-    .rk-1 {
-      background: linear-gradient(135deg, #fbbf24, #d97706)
-    }
-
-    .rk-2 {
-      background: linear-gradient(135deg, #94a3b8, #64748b)
-    }
-
-    .rk-3 {
-      background: linear-gradient(135deg, #d97706, #b45309)
-    }
-
-    .rk-d {
-      background: var(--tx3)
-    }
-
-    .td-prod .pn {
-      font-weight: 700;
-      color: var(--tx);
-      line-height: 1.2;
-      font-size: 12px
-    }
-
-    .td-prod .pb {
-      font-size: 9px;
-      color: var(--tx2);
-      text-transform: uppercase;
-      font-weight: 800;
-      letter-spacing: .5px;
-      margin-top: 5px;
-      background: linear-gradient(135deg, var(--sf2), #f1f5f9);
-      padding: 2px 8px;
-      border-radius: 5px;
-      border: 1px solid var(--bd);
-      display: inline-block;
-      box-shadow: var(--sh-s)
-    }
-
-    .ch-pill {
-      display: inline-flex;
-      padding: 4px 12px;
-      border-radius: 6px;
-      font-size: 9px;
-      font-weight: 700;
-      letter-spacing: .4px;
-      text-transform: uppercase;
-      white-space: nowrap;
-      transition: var(--tr)
-    }
-
-    .ch-shopee {
-      background: linear-gradient(135deg, #fff7ed, #ffedd5);
-      color: #ea580c;
-      border: 1px solid #fed7aa
-    }
-
-    .ch-tiktok {
-      background: linear-gradient(135deg, #0f172a, #1e293b);
-      color: #fff;
-      box-shadow: 0 1px 3px rgba(0, 0, 0, .2)
-    }
-
-    .ch-lazada {
-      background: linear-gradient(135deg, #eff6ff, #dbeafe);
-      color: #1d4ed8;
-      border: 1px solid #bfdbfe
-    }
-
-    .td-rev {
-      font-family: 'JetBrains Mono', monospace;
-      font-weight: 700;
-      font-size: 13px;
-      color: var(--tx)
-    }
-
-    .td-g {
-      font-size: 10.5px;
-      font-weight: 700;
-      white-space: nowrap
-    }
-
-    .td-g.up {
-      color: var(--ok)
-    }
-
-    .td-g.down {
-      color: var(--err)
-    }
-
-    .td-link {
-      text-align: center;
-      width: 36px
-    }
-
-    .prod-link {
-      text-decoration: none;
-      font-size: 14px;
-      opacity: .6;
-      transition: all .25s ease;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      width: 28px;
-      height: 28px;
-      border-radius: 6px
-    }
-
-    .prod-link:hover {
-      opacity: 1;
-      background: rgba(59, 130, 246, .08)
-    }
-
-    .td-num {
-      font-family: 'JetBrains Mono', monospace;
-      font-weight: 600;
-      font-size: 11.5px;
-      color: var(--tx)
-    }
-
-    /* FOOTER */
-    .footer {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 12px 0 0;
-      margin-top: auto;
-      border-top: 1px solid var(--bd);
-      position: relative;
-      z-index: 1
-    }
-
-    .footer-left {
-      font-size: 11px;
-      color: var(--tx3);
-      font-weight: 500
-    }
-
-    .footer-right {
-      display: flex;
-      align-items: center;
-      gap: 16px
-    }
-
-    .page-ind {
-      display: flex;
-      gap: 6px
-    }
-
-    .page-dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: var(--bd);
-      transition: var(--tr);
-      cursor: pointer
-    }
-
-    .page-dot.active {
-      background: linear-gradient(135deg, var(--pri), #4f46e5);
-      width: 24px;
-      border-radius: 4px;
-      box-shadow: 0 2px 6px rgba(26, 86, 219, .3)
-    }
-
-    .nav-btn {
-      width: 38px;
-      height: 38px;
-      border-radius: 12px;
-      border: 1px solid var(--bd);
-      background: rgba(255, 255, 255, 0.95);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      transition: var(--tr);
-      color: var(--tx2);
-      font-size: 16px
-    }
-
-    .nav-btn:hover {
-      background: linear-gradient(135deg, var(--pri), #4f46e5);
-      color: #fff;
-      border-color: transparent;
-      box-shadow: 0 4px 16px rgba(26, 86, 219, .35);
-      transform: translateY(-1px)
-    }
-
-    .watermark {
-      position: fixed;
-      bottom: 8px;
-      right: 16px;
-      font-size: 9px;
-      color: var(--tx3);
-      opacity: .4;
-      z-index: 10;
-      letter-spacing: .5px
-    }
-
-    /* ANIM */
-    .fade-content {
-      transition: opacity .4s cubic-bezier(.4, 0, .2, 1), transform .4s cubic-bezier(.4, 0, .2, 1)
-    }
-
-    .fade-content.fading {
-      opacity: 0;
-      transform: translateY(10px) scale(.99)
-    }
-
-    .ani {
-      opacity: 0;
-      transform: translateY(18px);
-      animation: su .6s cubic-bezier(.4, 0, .2, 1) forwards
-    }
-
-    @keyframes su {
-      to {
-        opacity: 1;
-        transform: translateY(0)
-      }
-    }
-
-    .d1 {
-      animation-delay: .08s
-    }
-
-    .d2 {
-      animation-delay: .14s
-    }
-
-    .d3 {
-      animation-delay: .2s
-    }
-
-    .d4 {
-      animation-delay: .26s
-    }
-
-    .d5 {
-      animation-delay: .32s
-    }
-
-    /* STAGGER KPI */
-    .kpi-card {
-      opacity: 0;
-      animation: kpiIn .5s cubic-bezier(.4, 0, .2, 1) forwards
-    }
-
-    .kpi-card:nth-child(1) {
-      animation-delay: .1s
-    }
-
-    .kpi-card:nth-child(2) {
-      animation-delay: .18s
-    }
-
-    .kpi-card:nth-child(3) {
-      animation-delay: .26s
-    }
-
-    .kpi-card:nth-child(4) {
-      animation-delay: .34s
-    }
-
-    @keyframes kpiIn {
-      from {
-        opacity: 0;
-        transform: translateY(16px) scale(.97)
-      }
-
-      to {
-        opacity: 1;
-        transform: translateY(0) scale(1)
-      }
-    }
-
-    /* RESPONSIVE */
-    @media(max-width:1200px) {
-      .slide {
-        padding: 24px 32px
-      }
-
-      .kpi-grid {
-        grid-template-columns: repeat(2, 1fr)
-      }
-
-      .content-grid,
-      .prod-grid {
-        grid-template-columns: repeat(2, 1fr)
-      }
-    }
-
-    @media(max-width:768px) {
-      .slide {
-        padding: 16px
-      }
-
-      .header {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 16px
-      }
-
-      .kpi-grid,
-      .prod-grid {
-        grid-template-columns: 1fr
-      }
-
-      .header h1 {
-        font-size: 22px
-      }
-    }
-
-    /* PERIOD SELECTOR */
-    .period-bar {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      margin-top: 8px;
-      flex-wrap: wrap
-    }
-
-    .period-label {
-      font-size: 10px;
-      font-weight: 700;
-      letter-spacing: .5px;
-      color: var(--tx3);
-      text-transform: uppercase;
-      margin-right: 2px
-    }
-
-    .period-pill {
-      padding: 4px 12px;
-      border-radius: 100px;
-      font-size: 11px;
-      font-weight: 600;
-      cursor: pointer;
-      border: 1.5px solid var(--bd);
-      background: rgba(255,255,255,.9);
-      color: var(--tx2);
-      transition: var(--tr);
-      white-space: nowrap
-    }
-
-    .period-pill:hover {
-      border-color: var(--pri-l);
-      color: var(--pri);
-      background: rgba(239,246,255,.9)
-    }
-
-    .period-pill.active {
-      background: linear-gradient(135deg, var(--pri), #4f46e5);
-      color: #fff;
-      border-color: transparent;
-      box-shadow: 0 3px 10px rgba(26,86,219,.3)
-    }
-
-    /* METRIC TABS (trend chart) */
-    .mtab {
-      padding: 5px 14px; border-radius: 100px; font-size: 11px; font-weight: 600;
-      cursor: pointer; border: 1.5px solid var(--bd); background: rgba(255,255,255,.9);
-      color: var(--tx2); transition: var(--tr); white-space: nowrap
-    }
-    .mtab:hover { border-color: var(--pri-l); color: var(--pri) }
-    .mtab.active { background: linear-gradient(135deg,var(--pri),#4f46e5); color:#fff; border-color:transparent; box-shadow:0 3px 10px rgba(26,86,219,.3) }
-
-    /* TREND CHART */
-    .trend-bars {
-      display: flex; gap: 8px; align-items: flex-end;
-      height: 220px; padding: 0 0 36px; position: relative;
-    }
-    .trend-bar-group {
-      flex: 1; display: flex; flex-direction: column;
-      align-items: center; justify-content: flex-end; gap: 4px; height: 100%;
-    }
-    .trend-bar-pair { display: flex; gap: 3px; align-items: flex-end; flex: 1; width: 100%; justify-content: center }
-    .trend-bar { width: 22px; border-radius: 4px 4px 0 0; transition: height .4s ease; position: relative; cursor: default }
-    .trend-bar:hover { opacity: .85 }
-    .trend-val { font-size: 9px; font-weight: 700; color: var(--tx1); text-align: center; line-height: 1.2 }
-    .trend-val.pre { color: var(--tx3) }
-    .trend-month { font-size: 11px; font-weight: 700; color: var(--tx2); margin-top: 6px }
-    .trend-change { font-size: 10px; font-weight: 700; margin-bottom: 2px }
-    .trend-change.up { color: #10b981 }
-    .trend-change.down { color: #ef4444 }
-    .trend-legend { display: flex; gap: 16px; margin-bottom: 12px }
-    .trend-legend span { font-size: 12px; color: var(--tx2); display: flex; align-items: center; gap: 5px }
-    .trend-dot { display: inline-block; width: 10px; height: 10px; border-radius: 2px }
-
-
-    @media print {
-      .slide {
-        min-height: auto;
-        page-break-after: always
-      }
-
-      .nav-btn,
-      .watermark {
-        display: none
-      }
-
-      body {
-        background: #fff
-      }
-
-      .kpi-card,
-      .card,
-      .tbl-wrap {
-        backdrop-filter: none;
-        -webkit-backdrop-filter: none;
-        background: #fff
-      }
+    };
+  </script>
+  <style type="text/tailwindcss">
+    @layer components {
+      .card { @apply rounded-2xl bg-white shadow-soft ring-1 ring-slate-200/70; }
+      .card-title { @apply text-base font-semibold text-slate-900; }
+      .card-sub { @apply mt-0.5 text-xs text-slate-500; }
+      .pill { @apply inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full px-3.5 py-1.5 text-sm font-medium transition focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500; }
+      .pill-on { @apply bg-brand-600 text-white shadow-sm; }
+      .pill-off { @apply bg-white text-slate-600 ring-1 ring-inset ring-slate-200 hover:bg-slate-50 hover:text-slate-900; }
+      .seg-btn { @apply rounded-lg px-3 py-1.5 text-xs font-semibold transition; }
+      .seg-on { @apply bg-white text-slate-900 shadow-sm; }
+      .seg-off { @apply text-slate-500 hover:text-slate-800; }
     }
   </style>
+  <style>
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+    .fade-up { animation: fadeUp .35s ease both; }
+    /* Chuyển kỳ không tải lại trang: nội dung mờ đi rồi hiện lại */
+    .fade-target { transition: opacity .2s ease, transform .2s ease; }
+    .fade-target.is-fading { opacity: 0; transform: translateY(6px); }
+    @media (prefers-reduced-motion: reduce) { .fade-target { transition: none; } }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { scrollbar-width: none; }
+    @media print {
+      .no-print { display: none !important; }
+      body { background: #fff !important; }
+      .card { box-shadow: none !important; break-inside: avoid; }
+    }
+  </style>
+
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 </head>
 
-<body>
-  <div class="slide-container">
-    <!-- SLIDE 1 -->
-    <div class="slide active" id="slide1">
-      <div class="bg-dec blue"></div>
-      <div class="bg-dec cyan"></div>
-      <div class="header ani">
-        <div class="header-left">
-          <div class="badge" id="badge1">Strategic Report Q1 2026</div>
-          <h1>Sector Performance Analysis</h1>
-          <p class="subtitle">Deep-Dive Analysis: Metric Data &amp; E-commerce Market Trends</p>
-          <div class="period-bar" id="periodBar1"></div>
-        </div>
-        <div class="nav-tabs">
-          <button class="nav-tab active" onclick="goTo(1)">📊 Executive Overview</button>
-          <button class="nav-tab" onclick="goTo(2)">🔍 Segment Deep-Dive</button>
-        </div>
-      </div>
-      <div id="catF1" class="filter-bar ani d1"></div>
-      <div id="subF1" class="filter-bar ani d2"></div>
-      <div id="kpi1" class="kpi-grid fade-content"></div>
-      <div id="charts1" class="content-grid fade-content"></div>
-      <div id="priceSection1" class="fade-content" style="position:relative;z-index:1;margin-bottom:12px"></div>
-      <div id="trendSection" class="fade-content" style="position:relative;z-index:1;margin-bottom:12px"></div>
-      <div class="footer ani d5">
-        <div class="footer-left">Thien Long Group — Confidential | E-commerce Intelligence Report</div>
-        <div class="footer-right">
-          <div class="page-ind">
-            <div class="page-dot active" onclick="goTo(1)"></div>
-            <div class="page-dot" onclick="goTo(2)"></div>
-          </div><button class="nav-btn" onclick="goTo(2)" title="Next">→</button>
-        </div>
-      </div>
-    </div>
-    <!-- SLIDE 2 -->
-    <div class="slide" id="slide2">
-      <div class="bg-dec blue"></div>
-      <div class="bg-dec cyan"></div>
-      <div class="header ani">
-        <div class="header-left">
-          <div class="badge" id="badge2">Strategic Report Q1 2026</div>
-          <h1>Sector Performance Analysis</h1>
-          <p class="subtitle">Deep-Dive Analysis: Metric Data &amp; E-commerce Market Trends</p>
-          <div class="period-bar" id="periodBar2"></div>
-        </div>
-        <div class="nav-tabs">
-          <button class="nav-tab" onclick="goTo(1)">📊 Executive Overview</button>
-          <button class="nav-tab active" onclick="goTo(2)">🔍 Segment Deep-Dive</button>
-        </div>
-      </div>
-      <div id="catF2" class="filter-bar ani d1"></div>
-      <div id="subF2" class="filter-bar ani d2"></div>
-      <div id="kpi2" class="kpi-grid fade-content"></div>
-      <div id="prodGrid2" class="fade-content" style="position:relative;z-index:1"></div>
-      <div class="footer ani d5">
-        <div class="footer-left">Thien Long Group — Confidential | E-commerce Intelligence Report</div>
-        <div class="footer-right">
-          <div class="page-ind">
-            <div class="page-dot" onclick="goTo(1)"></div>
-            <div class="page-dot active" onclick="goTo(2)"></div>
-          </div><button class="nav-btn" onclick="goTo(1)" title="Prev">←</button>
-        </div>
-      </div>
-    </div>
-    <!-- end slide-container -->
-  </div>
-  <div class="watermark">Thien Long Group © 2026</div>
+<body class="min-h-screen bg-slate-50 font-sans text-slate-700 antialiased">
+  <div class="mx-auto max-w-[1440px] px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
 
+    <!-- ===== HEADER (Z-flow: brand trái, bộ lọc kỳ phải) ===== -->
+    <header class="flex flex-col gap-5 md:flex-row md:items-center md:justify-between">
+      <div class="flex items-center gap-4">
+        <div class="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-brand-600 text-lg font-extrabold text-white shadow-soft">TL</div>
+        <div class="min-w-0">
+          <p class="text-xs font-semibold uppercase tracking-wider text-brand-600" id="periodLabel">Strategic Report</p>
+          <h1 class="truncate text-xl font-bold tracking-tight text-slate-900 sm:text-2xl">E-commerce Sales Dashboard</h1>
+          <p id="scopeLine" class="text-sm text-slate-500">Thiên Long Group · Metric market data</p>
+        </div>
+      </div>
+
+      <!-- Chọn kỳ: mọi kỳ hiện sẵn dạng tab (không ẩn trong dropdown) -->
+      <div class="no-print flex min-w-0 flex-col gap-2 md:items-end">
+        <div class="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-slate-500">
+          <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+          Kỳ báo cáo
+        </div>
+        <div id="periodTabs" role="tablist" aria-label="Kỳ báo cáo" class="no-scrollbar flex w-fit max-w-full items-center gap-1 overflow-x-auto rounded-2xl bg-white p-1 shadow-sm ring-1 ring-slate-200"></div>
+        <div id="comparePeriod" class="flex items-center gap-1.5 text-xs text-slate-500"></div>
+      </div>
+    </header>
+
+    <!-- ===== BỘ LỌC CATEGORY / SUB-CATEGORY ===== -->
+    <nav class="no-print mt-6 space-y-3" aria-label="Bộ lọc danh mục">
+      <div id="catPills" class="no-scrollbar -mx-4 flex gap-2 overflow-x-auto px-4 sm:mx-0 sm:flex-wrap sm:px-0"></div>
+      <div id="subPills" class="no-scrollbar -mx-4 flex gap-2 overflow-x-auto px-4 sm:mx-0 sm:flex-wrap sm:px-0"></div>
+    </nav>
+
+    <!-- ===== 4 KPI ===== -->
+    <section id="kpis" class="fade-target mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4 xl:gap-6" aria-label="Chỉ số chính"></section>
+
+    <!-- ===== KEY INSIGHTS (tự sinh từ số) ===== -->
+    <section id="insightCard" class="fade-target card mt-6 overflow-hidden" aria-label="Key Insights"></section>
+
+    <!-- ===== PHÂN TÍCH (F-flow: danh sách trái, biểu đồ phải) ===== -->
+    <!-- 2 hàng thẳng mép: [xếp hạng | trend], [thương hiệu | sàn + giá]. Card cùng hàng cao bằng nhau. -->
+    <section class="fade-target mt-6 grid grid-cols-1 gap-6 lg:grid-cols-12">
+      <div id="rankCard" class="card min-w-0 p-5 sm:p-6 lg:col-span-4"></div>
+      <div id="trendCard" class="card min-w-0 p-5 sm:p-6 lg:col-span-8"></div>
+      <div id="brandCard" class="card min-w-0 p-5 sm:p-6 lg:col-span-4"></div>
+      <div class="grid min-w-0 grid-cols-1 gap-6 md:grid-cols-2 lg:col-span-8">
+        <div id="platCard" class="card min-w-0 p-5 sm:p-6"></div>
+        <div id="priceCard" class="card min-w-0 p-5 sm:p-6"></div>
+      </div>
+    </section>
+
+    <!-- ===== TOP SKU ===== -->
+    <section id="skuCard" class="fade-target card mt-6 overflow-hidden"></section>
+
+    <footer class="mt-8 flex flex-col gap-1 border-t border-slate-200 pt-5 text-xs text-slate-400 sm:flex-row sm:justify-between">
+      <span>Thiên Long Group — Confidential · E-commerce Intelligence Report</span>
+      <span>Nguồn: Metric · Doanh số theo VND</span>
+    </footer>
+  </div>
+
+  <!-- ===== DATA: danh mục + màu + engine, rồi file số gốc các kỳ ===== -->
   <script>
-    /* ===== DYNAMIC DATA LOADER — ?p=q1|q2 ===== */
-    (function(){
-      var _p = (new URLSearchParams(location.search).get('p') || 'q1').replace(/[^a-z0-9]/g,'');
-      document.write('<scr'+'ipt src="data/2026/ecom_data_' + _p + '.js"><\/scr'+'ipt>');
+    /* ===== DATASETS — thêm kỳ mới vào đây (tab hiện công khai) ===== */
+    var DATASETS = [
+      { p: 'q1', label: 'Q1 2026' },
+      { p: 'q2', label: 'Q2 2026' },
+      { p: 'q3', label: 'Q3 2026' },
+      { p: 'ytdh1', label: 'YTD 2026' }
+    ];
+    var curP = (new URLSearchParams(location.search).get('p') || 'q1').replace(/[^a-z0-9]/g, '');
+  </script>
+  <script src="data/catalog.js"></script>
+  <script src="data/brand_colors.js"></script>
+  <script src="data/ecom_engine.js"></script>
+  <script>
+    /* Nạp file data của mọi kỳ trong DATASETS (cho trend theo quý) và kỳ đang xem */
+    (function () {
+      var need = DATASETS.map(function (d) { return d.p; });
+      if (need.indexOf(curP) < 0) need.push(curP);
+      need.forEach(function (p) { document.write('<scr' + 'ipt src="data/2026/ecom_data_' + p + '.js"><\/scr' + 'ipt>'); });
     })();
   </script>
   <script>
-    /* ===== DATASETS — add new entries each quarter ===== */
-    const DATASETS = [
-      { p: 'q1', label: 'Q1 2026' },
-      { p: 'q2', label: 'Q2 2026' },
-      { p: 'ytdh1', label: 'YTD H1 2026' },
-    ];
-    const curPeriodParam = (new URLSearchParams(location.search).get('p') || 'q1').replace(/[^a-z0-9]/g,'');
-    const maxSlides = 2;
+    /* ===== ENGINE: số gốc → PERIOD, CAT, MONTHLY, RAW ===== */
+    var PERIOD, CAT, MONTHLY, RAW, DATA_ERROR = '';
+    try { var _b = ECOM.build(curP); PERIOD = _b.PERIOD; CAT = _b.CAT; MONTHLY = _b.MONTHLY; RAW = _b.RAW; }
+    catch (e) { DATA_ERROR = e.message; console.error(e); }
+  </script>
 
-    /* ===== STATE ===== */
-    const _qs = new URLSearchParams(location.search);
-    let curCat = _qs.get('cat') || 'all';
-    let curSub = _qs.get('sub') || 'all';
-    let curSlide = Math.min(parseInt(_qs.get('slide') || '1', 10), maxSlides);
-    let _rt = null;
-    let curMetric = 'rv';
-    const EL = {};
-    function getData() {
-      const d = CAT[curCat];
-      if (curSub !== 'all' && d.sdata && d.sdata[curSub]) {
-        const sd = d.sdata[curSub];
-        return { n: d.n, i: d.i, sc: d.sc, kpi: sd.kpi || d.kpi, dkpi: sd.dkpi || d.dkpi, plat: sd.plat || d.plat, brand: sd.brand || d.brand, price: sd.price || d.price, prod: sd.prod || d.prod, _sub: true };
+  <script>
+    /* ===================== APP ===================== */
+    var QS = new URLSearchParams(location.search);
+    var curCat = QS.get('cat') || 'all';
+    var curSub = QS.get('sub') || 'all';
+    var trendMode = 'q';          // 'q' = theo quý, 'm' = theo tháng
+    var skuPlat = 'all';          // lọc bảng SKU theo sàn
+    var CH = {};                  // Chart.js instances
+    var QB = {};                  // cache ECOM.build theo kỳ
+    if (typeof _b !== 'undefined' && _b) QB[curP] = _b;
+    var switching = null;         // timer khi đang chuyển kỳ
+
+    var PLAT = {};
+    ECOM_CATALOG.platforms.forEach(function (p) { PLAT[p.k] = p; });
+    var BC_LC = {};
+    Object.keys(typeof BRAND_COLORS !== 'undefined' ? BRAND_COLORS : {}).forEach(function (k) { BC_LC[k.toLowerCase()] = BRAND_COLORS[k]; });
+
+    /* ---------- tiện ích ---------- */
+    function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+    function isNum(x) { return typeof x === 'number' && isFinite(x); }
+    function fmtTy(v) {
+      if (!isNum(v)) return '—';
+      return v >= 1 ? v.toFixed(1) + ' Tỷ' : (v * 1000).toFixed(1) + ' Tr';
+    }
+    function pct(cur, pre, g) {
+      var x = isNum(g) ? g : (pre > 0 ? (cur / pre - 1) * 100 : null);
+      if (x === null) return '';
+      var r = Math.round(x);
+      return (r > 0 ? '+' : '') + r + '%';
+    }
+    function rgba(hex, a) {
+      var h = hex.replace('#', '');
+      if (h.length === 3) h = h.split('').map(function (c) { return c + c; }).join('');
+      var n = parseInt(h, 16);
+      return 'rgba(' + (n >> 16 & 255) + ',' + (n >> 8 & 255) + ',' + (n & 255) + ',' + a + ')';
+    }
+    function yearOf(label) { var m = String(label).match(/(\d{4})\s*$/); return m ? m[1] : label; }
+    function brandColor(n) { return BC_LC[String(n || '').toLowerCase()] || '#94a3b8'; }
+
+    /* Badge tăng trưởng màu ngữ nghĩa: xanh = tăng, đỏ = giảm, xám = không đổi / không có */
+    function badge(g) {
+      if (!g) return '<span class="inline-flex items-center rounded-full bg-slate-100 px-2 py-0.5 text-xs font-semibold text-slate-500">—</span>';
+      var v = parseFloat(g);
+      var cls = v > 0 ? 'bg-emerald-50 text-emerald-700 ring-emerald-600/20'
+        : v < 0 ? 'bg-rose-50 text-rose-700 ring-rose-600/20'
+          : 'bg-slate-100 text-slate-600 ring-slate-500/20';
+      var arrow = v > 0 ? '▲' : v < 0 ? '▼' : '■';
+      return '<span class="inline-flex shrink-0 items-center gap-1 rounded-full px-2 py-0.5 text-xs font-semibold tabular-nums ring-1 ring-inset ' + cls + '"><span class="text-[9px]">' + arrow + '</span>' + esc(g) + '</span>';
+    }
+    function emptyState(msg) {
+      return '<div class="grid h-full min-h-[180px] place-items-center rounded-xl border border-dashed border-slate-200 bg-slate-50/60 p-6 text-center text-sm text-slate-400">' + esc(msg) + '</div>';
+    }
+    function cardHead(icon, title, sub, right) {
+      return '<div class="mb-5 flex flex-wrap items-start justify-between gap-3">' +
+        '<div class="flex items-start gap-3"><span class="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-slate-100 text-base">' + icon + '</span>' +
+        '<div><h2 class="card-title">' + esc(title) + '</h2>' + (sub ? '<p class="card-sub">' + esc(sub) + '</p>' : '') + '</div></div>' +
+        (right || '') + '</div>';
+    }
+    function mkChart(id, cfg) {
+      if (CH[id]) { CH[id].destroy(); delete CH[id]; }
+      var el = document.getElementById(id);
+      if (el) CH[id] = new Chart(el, cfg);
+    }
+
+    /* ---------- dữ liệu theo scope ---------- */
+    function scopeDisplay() {
+      var c = CAT[curCat];
+      if (curSub !== 'all' && c.sdata && c.sdata[curSub]) return c.sdata[curSub];
+      return c;
+    }
+    /* Số gốc của scope (cat, sub) trong bộ RAW của 1 kỳ */
+    function scopeRaw(raw, cat, sub) {
+      if (!raw) return null;
+      if (cat === 'all') {
+        var list = ECOM_CATALOG.cats.map(function (c) { return raw[c.k] && raw[c.k].all; }).filter(Boolean);
+        return list.length ? ECOM.aggregate(list, 'cats') : null;
       }
-      return { dkpi: d.dkpi || d.kpi, ...d };
+      return (raw[cat] && raw[cat][sub === 'all' ? 'all' : sub]) || null;
+    }
+    function scopeName() {
+      var c = CAT[curCat];
+      var s = c.sc.filter(function (x) { return x.k === curSub; })[0];
+      return c.n + (curSub !== 'all' && s ? ' › ' + s.n : '');
+    }
+    function periodBuild(p) {
+      if (!(p in QB)) { try { QB[p] = ECOM.build(p); } catch (e) { QB[p] = null; } }
+      return QB[p];
     }
 
-    /* ===== ICONS ===== */
-    const KI = { blue: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="12" width="4" height="9" rx="1"/><rect x="10" y="7" width="4" height="14" rx="1"/><rect x="17" y="3" width="4" height="18" rx="1"/></svg>', green: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>', purple: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>', orange: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>', teal: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>' };
+    /* ---------- header & bộ lọc ---------- */
+    function renderHeader() {
+      document.getElementById('periodLabel').textContent = PERIOD.label;
+      document.getElementById('comparePeriod').innerHTML = 'So sánh với cùng kỳ' +
+        '<span class="rounded-md bg-slate-100 px-1.5 py-0.5 font-semibold text-slate-700">' + esc(PERIOD.pre) + '</span>';
+      document.title = 'Thiên Long Group — E-commerce Dashboard ' + PERIOD.cur;
+      var opts = DATASETS.slice();
+      if (!opts.some(function (d) { return d.p === curP; })) opts.push({ p: curP, label: PERIOD.cur });
+      /* Tách nhóm: quý | kỳ cộng dồn (YTD), ngăn bằng 1 vạch dọc */
+      var DATA = typeof ECOM_DATA !== 'undefined' ? ECOM_DATA : {};
+      var isCum = function (d) { return !!(DATA[d.p] && DATA[d.p].parts); };
+      var tab = function (d) {
+        var on = d.p === curP;
+        return '<button type="button" role="tab" aria-selected="' + on + '" onclick="switchPeriod(\'' + esc(d.p) + '\')" class="' +
+          'inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-xl px-3.5 py-2 text-sm font-semibold transition focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 ' +
+          (on ? 'bg-brand-600 text-white shadow-sm' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900') + '">' +
+          (on ? '<svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6 9 17l-5-5"/></svg>' : '') +
+          esc(d.label) + '</button>';
+      };
+      var q = opts.filter(function (d) { return !isCum(d); }), c = opts.filter(isCum);
+      document.getElementById('periodTabs').innerHTML = q.map(tab).join('') +
+        (q.length && c.length ? '<span class="mx-1 h-6 w-px shrink-0 bg-slate-200" aria-hidden="true"></span>' : '') +
+        c.map(tab).join('');
+    }
+    /* Góc trên-trái (điểm đầu Z-flow): cho biết đang xem scope nào, kỳ nào */
+    function renderScopeLine() {
+      var c = CAT[curCat];
+      var s = c.sc.filter(function (x) { return x.k === curSub; })[0];
+      var icon = curSub !== 'all' && s ? s.i : c.i;
+      document.getElementById('scopeLine').innerHTML =
+        '<span class="font-semibold text-slate-800">' + icon + ' ' + esc(scopeName()) + '</span>' +
+        '<span class="text-slate-400"> · ' + esc(PERIOD.cur) + ' · Shopee, TikTok Shop, Lazada</span>';
+    }
+    function renderFilters() {
+      document.getElementById('catPills').innerHTML = Object.keys(CAT).map(function (k) {
+        var v = CAT[k];
+        return '<button type="button" class="pill ' + (k === curCat ? 'pill-on' : 'pill-off') + '" onclick="setCat(\'' + k + '\')"><span>' + v.i + '</span>' + esc(v.n) + '</button>';
+      }).join('');
+      var sc = CAT[curCat].sc;
+      var el = document.getElementById('subPills');
+      if (curCat === 'all' || sc.length <= 1) { el.innerHTML = ''; el.classList.add('hidden'); return; }
+      el.classList.remove('hidden');
+      el.innerHTML = '<span class="flex shrink-0 items-center pr-1 text-xs font-semibold uppercase tracking-wider text-slate-400">Sub-category</span>' +
+        sc.map(function (s) {
+          return '<button type="button" class="pill !py-1 !text-xs ' + (s.k === curSub ? 'pill-on' : 'pill-off') + '" onclick="setSub(\'' + s.k + '\')"><span>' + s.i + '</span>' + esc(s.n) + '</button>';
+        }).join('');
+    }
 
-    /* ===== RENDER ===== */
-    function renderCatFilter(slideN) {
-      const el = EL['catF' + slideN];
-      el.innerHTML = `<div class="filter-label">🏷️ Category</div><div class="filter-pills">${Object.entries(CAT).map(([k, v]) => `<button class="filter-pill${k === curCat ? ' active' : ''}" onclick="setCat('${k}')"><span class="pi">${v.i}</span>${v.n}</button>`).join('')}</div>`;
+    /* ---------- KPI ---------- */
+    var KPI_ICON = [
+      '<svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>',
+      '<svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><path d="M3 6h18M16 10a4 4 0 0 1-8 0"/></svg>',
+      '<svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.21 15.89A10 10 0 1 1 8 2.83"/><path d="M22 12A10 10 0 0 0 12 2v10z"/></svg>',
+      '<svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l1-5h16l1 5M3 9h18v2a3 3 0 0 1-6 0 3 3 0 0 1-6 0 3 3 0 0 1-6 0z"/><path d="M5 13v8h14v-8"/></svg>'
+    ];
+    function renderKPIs(d, r) {
+      var tt = (r && r.plat && r.plat.tiktok) || [0, 0];
+      var pairs = r ? [
+        [r.gross.pre, r.gross.cur],
+        [r.units.pre, r.units.cur],
+        [r.gross.pre > 0 ? tt[1] / r.gross.pre * 100 : null, r.gross.cur > 0 ? tt[0] / r.gross.cur * 100 : null],
+        [r.stores.pre, r.stores.cur]
+      ] : [[], [], [], []];
+      /* Thứ tự hiển thị theo Z-flow: KPI chiến lược (TikTok Market Share) ở điểm cuối, góc dưới-phải.
+         Engine trả kpi theo thứ tự: 0 Gross, 1 Units, 2 TikTok Share, 3 Storefronts. */
+      var ORDER = [0, 1, 3, 2];
+      document.getElementById('kpis').innerHTML = ORDER.filter(function (i) { return d.kpi[i]; }).map(function (i) {
+        var k = d.kpi[i];
+        var pr = pairs[i] || [];
+        var mx = Math.max(pr[0] || 0, pr[1] || 0) || 1;
+        function bar(lbl, v, cls) {
+          var w = isNum(v) ? Math.max(v / mx * 100, 2) : 0;
+          return '<div class="flex items-center gap-2 text-[11px] text-slate-500"><span class="w-[4.5rem] shrink-0 whitespace-nowrap">' + esc(lbl) + '</span>' +
+            '<div class="h-1.5 flex-1 overflow-hidden rounded-full bg-slate-100"><div class="h-full rounded-full ' + cls + '" style="width:' + w + '%"></div></div></div>';
+        }
+        return '<article class="card p-5 sm:p-6">' +
+          '<div class="flex items-start justify-between gap-3">' +
+          '<div class="flex items-center gap-3"><span class="grid h-10 w-10 place-items-center rounded-xl bg-brand-50 text-brand-600">' + KPI_ICON[i] + '</span>' +
+          '<p class="text-sm font-medium text-slate-500">' + esc(k.l) + '</p></div>' + badge(k.g) + '</div>' +
+          '<p class="mt-4 text-3xl font-bold tracking-tight text-slate-900 tabular-nums">' + esc(k.v) +
+          (k.u ? '<span class="ml-1.5 text-base font-semibold text-slate-400">' + esc(k.u) + '</span>' : '') + '</p>' +
+          '<p class="mt-1 min-h-[1rem] text-xs text-slate-500">' + esc(k.sub || '') + '</p>' +
+          '<div class="mt-4 space-y-1.5">' + bar(PERIOD.pre, pr[0], 'bg-slate-300') + bar(PERIOD.cur, pr[1], 'bg-brand-600') + '</div>' +
+          '</article>';
+      }).join('');
     }
-    function renderSubFilter(slideN) {
-      const d = CAT[curCat], el = EL['subF' + slideN];
-      el.innerHTML = `<div class="filter-label">📂 Sub-category</div><div class="filter-pills">${d.sc.map(s => `<button class="filter-pill${s.k === curSub ? ' active' : ''}" onclick="setSub('${s.k}')"><span class="pi">${s.i}</span>${s.n}</button>`).join('')}</div>`;
+
+    /* ---------- cột trái: xếp hạng category / sub-category ---------- */
+    /* ---------- Key Insights tự sinh ----------
+       Insight chỉ dùng số đã hiện trên trang (growth %, pp, Tỷ, thứ hạng). Không tạo chỉ số phái sinh mới. */
+    function gNum(cur, pre, g) { return isNum(g) ? g : (pre > 0 ? (cur / pre - 1) * 100 : null); }
+    function sg(x) { var r = Math.round(x); return (r > 0 ? '+' : '') + r + '%'; }
+    function spp(x) { return (x > 0 ? '+' : '') + x.toFixed(1) + 'pp'; }
+    function B(s) { return '<b class="font-semibold text-slate-900">' + esc(s) + '</b>'; }
+
+    function buildInsights(d, r) {
+      var out = [];
+      if (!r) return out;
+      var gG = gNum(r.gross.cur, r.gross.pre, r.gross.g), gU = gNum(r.units.cur, r.units.pre, r.units.g), gS = gNum(r.stores.cur, r.stores.pre, r.stores.g);
+
+      // 1. Doanh số vs sản lượng
+      if (isNum(gG) && isNum(gU)) {
+        if (gG > 0 && gU < 0) out.push({ t: 'up', h: 'Gross Sales ' + B(sg(gG)) + ' nhưng Units ' + B(sg(gU)) + '. Tăng trưởng đến từ giá trị mỗi sản phẩm bán ra (combo, quy cách lớn, giá cao hơn), không đến từ sản lượng.' });
+        else if (gG > 0 && gU >= 0) out.push({ t: 'up', h: 'Gross Sales ' + B(sg(gG)) + ' và Units ' + B(sg(gU)) + '. Thị trường tăng cả doanh số lẫn sản lượng.' });
+        else if (gG <= 0 && gU < 0) out.push({ t: 'down', h: 'Gross Sales ' + B(sg(gG)) + ' và Units ' + B(sg(gU)) + '. Thị trường thu hẹp cả doanh số lẫn sản lượng.' });
+        else out.push({ t: 'down', h: 'Gross Sales ' + B(sg(gG)) + ' dù Units ' + B(sg(gU)) + '. Giá trị mỗi sản phẩm bán ra đang giảm.' });
+      }
+
+      // 2. Sàn
+      var plats = (d.plat || []).filter(function (p) { return p.pre > 0; }).map(function (p) { return { n: p.n, cur: p.cur, g: (p.cur / p.pre - 1) * 100 }; });
+      if (plats.length) {
+        var fast = plats.slice().sort(function (a, b) { return b.g - a.g; })[0];
+        var ts = d.kpi[2];
+        var txt = fast.n + ' tăng nhanh nhất ' + B(sg(fast.g)) + '.';
+        if (ts && ts.v) txt += ' TikTok Market Share đạt ' + B(ts.v) + (ts.g ? ' (' + B(ts.g) + ')' : '') + '.';
+        out.push({ t: fast.g >= 0 ? 'up' : 'down', h: txt });
+        var drop = plats.filter(function (p) { return p.g <= -30; })[0];
+        if (drop) out.push({ t: 'down', h: drop.n + ' giảm mạnh ' + B(sg(drop.g)) + ', chỉ còn ' + B(fmtTy(drop.cur)) + '.' });
+      }
+
+      // 3. Thương hiệu
+      var br = (d.brand || []).filter(function (b) { return b.n !== 'Others'; });
+      if (br.length) {
+        var lead = br[0], tlIdx = -1;
+        br.forEach(function (b, i) { if (b.n === 'Thiên Long') tlIdx = i; });
+        var gain = br.filter(function (b) { return b.pre > 0; }).sort(function (a, b) { return (b.cur - b.pre) - (a.cur - a.pre); })[0];
+        var t2;
+        if (tlIdx === 0) {
+          t2 = 'Thiên Long dẫn đầu với ' + B(lead.cur.toFixed(1) + '%') + (lead.pre > 0 ? ' (' + B(spp(lead.cur - lead.pre)) + ')' : '') + '.';
+          if (br[1]) t2 += ' ' + br[1].n + ' đứng #2, cách ' + B((lead.cur - br[1].cur).toFixed(1) + 'pp') + '.';
+        } else if (tlIdx > 0) {
+          var tl = br[tlIdx];
+          t2 = lead.n + ' dẫn đầu với ' + B(lead.cur.toFixed(1) + '%') + '. Thiên Long đứng #' + (tlIdx + 1) + ' với ' + B(tl.cur.toFixed(1) + '%') + (tl.pre > 0 ? ' (' + B(spp(tl.cur - tl.pre)) + ')' : '') + '.';
+        } else {
+          t2 = lead.n + ' dẫn đầu với ' + B(lead.cur.toFixed(1) + '%') + '. Thiên Long không nằm trong top 5 thương hiệu.';
+        }
+        if (gain && gain.cur - gain.pre >= 1 && gain.n !== 'Thiên Long') t2 += ' ' + gain.n + ' tăng thị phần mạnh nhất ' + B(spp(gain.cur - gain.pre)) + '.';
+        out.push({ t: tlIdx >= 0 && br[tlIdx].pre > 0 && br[tlIdx].cur < br[tlIdx].pre ? 'down' : 'neutral', h: t2 });
+      }
+
+      // 4. Category / sub-category con
+      var kids = [];
+      if (curCat === 'all') kids = Object.keys(CAT).filter(function (k) { return k !== 'all' && RAW[k] && RAW[k].all; }).map(function (k) { return { n: CAT[k].n, r: RAW[k].all }; });
+      else if (curSub === 'all') kids = CAT[curCat].sc.filter(function (s) { return s.k !== 'all' && RAW[curCat][s.k]; }).map(function (s) { return { n: s.n, r: RAW[curCat][s.k] }; });
+      if (kids.length > 1) {
+        kids.forEach(function (k) { k.g = gNum(k.r.gross.cur, k.r.gross.pre, k.r.gross.g); });
+        var big = kids.slice().sort(function (a, b) { return b.r.gross.cur - a.r.gross.cur; })[0];
+        var fk = kids.filter(function (k) { return isNum(k.g); }).sort(function (a, b) { return b.g - a.g; })[0];
+        var t4 = big.n + ' lớn nhất với ' + B(fmtTy(big.r.gross.cur)) + '.';
+        if (fk && fk.n !== big.n) t4 += ' ' + fk.n + ' tăng nhanh nhất ' + B(sg(fk.g)) + '.';
+        else if (fk) t4 += ' Đây cũng là nhóm tăng nhanh nhất (' + B(sg(fk.g)) + ').';
+        out.push({ t: 'neutral', h: t4 });
+      }
+
+      // 5. Gian hàng
+      if (isNum(gS) && isNum(gG) && gS < 0 && gG > 0) out.push({ t: 'neutral', h: 'Gian hàng có lượt bán ' + B(sg(gS)) + ' trong khi doanh số tăng. Doanh số đang tập trung vào ít nhà bán hơn.' });
+
+      // 6. Phân khúc giá
+      var pz = (d.price || []).filter(function (p) { return p.s > 0; }).sort(function (a, b) { return b.s - a.s; });
+      if (pz.length) out.push({ t: 'neutral', h: 'Phân khúc giá lớn nhất là ' + B(pz[0].r) + ' (' + B(fmtTy(pz[0].s)) + ')' + (pz[1] ? ', tiếp theo là ' + B(pz[1].r) + ' (' + B(fmtTy(pz[1].s)) + ')' : '') + '.' });
+
+      return out.slice(0, 6);
     }
-    function renderExecKPIs(d) {
-      const isNeg = v => v && v.startsWith('-');
-      EL.kpi1.innerHTML = d.kpi.map((k, i) => { const neg = isNeg(k.g); const arrow = neg ? '↘' : '↗'; const cls = neg ? ' down' : ''; return `<div class="kpi-card ani d${i + 1}"><div class="kpi-top"><div class="kpi-icon ${k.ic}">${KI[k.ic]}</div>${k.g ? `<span class="kpi-growth${cls}">${arrow} ${k.g}</span>` : ''}</div><p class="kpi-label">${k.l}</p><p class="kpi-value">${k.v} <span class="unit">${k.u}</span></p>${k.sub ? `<p class="kpi-sub">${k.sub}</p>` : ''}</div>` }).join('');
+
+    function renderInsights(d, r) {
+      var ins = buildInsights(d, r);
+      var dot = { up: 'bg-emerald-500', down: 'bg-rose-500', neutral: 'bg-brand-600' };
+      var insHTML = ins.length ? '<ul class="grid grid-cols-1 gap-x-10 gap-y-3 lg:grid-cols-2">' + ins.map(function (x) {
+        return '<li class="flex gap-3 text-sm leading-relaxed text-slate-600"><span class="mt-2 h-1.5 w-1.5 shrink-0 rounded-full ' + dot[x.t] + '"></span><span>' + x.h + '</span></li>';
+      }).join('') + '</ul>' : '<p class="text-sm text-slate-400">Chưa đủ số để sinh insight.</p>';
+      document.getElementById('insightCard').innerHTML = '<div class="p-5 sm:p-6">' +
+        cardHead('💡', 'Key Insights', scopeName() + ' · ' + PERIOD.cur + ' vs ' + PERIOD.pre).replace('mb-5', 'mb-4') + insHTML + '</div>';
     }
-    function renderKPIs(targetId, d) {
-      const isNeg = v => v && v.startsWith('-');
-      const dkpis = d.dkpi.map(k => {
-        if (k.l === 'Leading Brand') {
-          const topB = d.brand[0];
-          if (topB) {
-            let prods = d._sub ? d.prod : (curSub === 'all' ? d.prod : d.prod.filter(p => p.sc === curSub));
-            if (prods.length === 0) prods = d.prod;
-            let top10Prods = prods.slice(0, 10);
-            const norm = s => s ? s.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "") : '';
-            const topBN = norm(topB.n);
-            const count = top10Prods.filter(p => { const pBN = norm(p.br); return pBN.includes(topBN) || topBN.includes(pBN) || (topBN.includes('thien long') && pBN.includes('tl')) || (topBN.includes('tl') && pBN.includes('thien long')) }).length;
-            return { ...k, v: `${topB.n} (${parseFloat(topB.cur).toFixed(2)}%)`, sub: `${count}/10 Top SKU Spots` };
+
+    function renderRank() {
+      var items, title, sub, back = '';
+      if (curCat === 'all') {
+        title = 'Top Categories'; sub = 'Gross Sales · ' + PERIOD.cur + ' · bấm để xem chi tiết';
+        items = Object.keys(CAT).filter(function (k) { return k !== 'all'; }).map(function (k) {
+          return { n: CAT[k].n, i: CAT[k].i, r: RAW[k] && RAW[k].all, act: "setCat('" + k + "')", on: false };
+        });
+      } else {
+        var c = CAT[curCat];
+        title = 'Top Sub-categories'; sub = c.n + ' · Gross Sales ' + PERIOD.cur;
+        back = '<button type="button" onclick="setCat(\'all\')" class="no-print rounded-lg px-2 py-1 text-xs font-semibold text-brand-600 hover:bg-brand-50">← Tất cả</button>';
+        items = c.sc.filter(function (s) { return s.k !== 'all'; }).map(function (s) {
+          return { n: s.n, i: s.i, r: RAW[curCat] && RAW[curCat][s.k], act: "setSub('" + (s.k === curSub ? 'all' : s.k) + "')", on: s.k === curSub };
+        });
+      }
+      items = items.filter(function (x) { return x.r; }).sort(function (a, b) { return b.r.gross.cur - a.r.gross.cur; });
+      var mx = Math.max.apply(null, items.map(function (x) { return Math.max(x.r.gross.cur, x.r.gross.pre || 0); }).concat([0])) || 1;
+      var list = items.length ? '<ol class="-mx-2 space-y-1">' + items.map(function (x, idx) {
+        var g = x.r.gross;
+        return '<li><button type="button" onclick="' + x.act + '" class="w-full rounded-xl px-2 py-2.5 text-left transition hover:bg-slate-50 ' + (x.on ? 'bg-brand-50 ring-1 ring-inset ring-brand-200 hover:bg-brand-50' : '') + '">' +
+          '<div class="flex items-center gap-3">' +
+          '<span class="grid h-7 w-7 shrink-0 place-items-center rounded-lg text-xs font-bold ' + (idx === 0 ? 'bg-brand-600 text-white' : 'bg-slate-100 text-slate-600') + '">' + (idx + 1) + '</span>' +
+          '<span class="text-lg leading-none">' + x.i + '</span>' +
+          '<span class="min-w-0 flex-1 truncate text-sm font-semibold text-slate-800">' + esc(x.n) + '</span>' +
+          '<span class="text-sm font-bold tabular-nums text-slate-900">' + fmtTy(g.cur) + '</span></div>' +
+          '<div class="mt-2 flex items-center gap-3 pl-10">' +
+          /* 2 thanh riêng: năm trước (xám) ở trên, năm nay (xanh) ở dưới — không chồng lên nhau */
+          '<div class="flex flex-1 flex-col gap-1" title="' + esc(PERIOD.pre) + ': ' + fmtTy(g.pre) + ' · ' + esc(PERIOD.cur) + ': ' + fmtTy(g.cur) + '">' +
+          '<div class="h-1.5 overflow-hidden rounded-full bg-slate-100"><div class="h-full rounded-full bg-slate-300" style="width:' + ((g.pre || 0) / mx * 100) + '%"></div></div>' +
+          '<div class="h-1.5 overflow-hidden rounded-full bg-slate-100"><div class="h-full rounded-full bg-brand-600" style="width:' + (g.cur / mx * 100) + '%"></div></div></div>' +
+          badge(pct(g.cur, g.pre, g.g)) + '</div></button></li>';
+      }).join('') + '</ol>' : emptyState(curCat === 'all' ? 'Chưa có category nào trong kỳ này.' : 'Category này chưa có sub-category trong kỳ ' + PERIOD.cur + '.');
+      var legend = items.length ? '<div class="mt-4 flex items-center gap-4 border-t border-slate-100 pt-3 text-[11px] text-slate-500">' +
+        '<span class="flex items-center gap-1.5"><span class="h-2 w-2 rounded-full bg-slate-300"></span>' + esc(PERIOD.pre) + '</span>' +
+        '<span class="flex items-center gap-1.5"><span class="h-2 w-2 rounded-full bg-brand-600"></span>' + esc(PERIOD.cur) + '</span></div>' : '';
+      document.getElementById('rankCard').innerHTML = cardHead(curCat === 'all' ? '🏆' : CAT[curCat].i, title, sub, back) + list + legend;
+    }
+
+    /* ---------- cột trái: thị phần thương hiệu ---------- */
+    function renderBrand(d) {
+      var brands = d.brand || [];
+      var top = brands[0];
+      var list = brands.map(function (b) {
+        var diff = Math.round((b.cur - b.pre) * 10) / 10;
+        var pp = (b.n !== 'Others' && !b.pre) ? '' : (diff > 0 ? '+' : '') + diff.toFixed(1) + 'pp';
+        return '<li class="flex items-center gap-3 py-2">' +
+          '<span class="h-2.5 w-2.5 shrink-0 rounded-full" style="background:' + b.c + '"></span>' +
+          '<span class="min-w-0 flex-1 truncate text-sm font-medium text-slate-700">' + esc(b.n) + '</span>' +
+          '<span class="text-sm font-bold tabular-nums text-slate-900">' + b.cur.toFixed(1) + '%</span>' +
+          '<span class="w-[72px] text-right">' + badge(pp) + '</span></li>';
+      }).join('');
+      document.getElementById('brandCard').innerHTML =
+        cardHead('🌐', 'Brand Landscape', 'Thị phần theo Gross Sales · ' + PERIOD.cur + ' · thay đổi so với ' + PERIOD.pre) +
+        (brands.length ? '<div class="relative mx-auto h-44 w-44"><canvas id="brandChart"></canvas>' +
+          '<div class="pointer-events-none absolute inset-0 grid place-items-center text-center"><div>' +
+          '<div class="text-2xl font-bold tabular-nums" style="color:' + top.c + '">' + top.cur.toFixed(1) + '%</div>' +
+          '<div class="max-w-[96px] truncate text-xs font-semibold text-slate-500">' + esc(top.n) + '</div></div></div></div>' +
+          '<ul class="mt-4 divide-y divide-slate-100">' + list + '</ul>' : emptyState('Chưa có dữ liệu thương hiệu.'));
+      if (!brands.length) return;
+      mkChart('brandChart', {
+        type: 'doughnut',
+        data: { labels: brands.map(function (b) { return b.n; }), datasets: [{ data: brands.map(function (b) { return b.cur; }), backgroundColor: brands.map(function (b) { return b.c; }), borderColor: '#fff', borderWidth: 2, hoverOffset: 6 }] },
+        options: {
+          cutout: '72%', maintainAspectRatio: false,
+          plugins: { legend: { display: false }, tooltip: { callbacks: { label: function (c) { return ' ' + c.label + ': ' + c.parsed.toFixed(1) + '%'; } } } }
+        }
+      });
+    }
+
+    /* ---------- cột phải: xu hướng doanh số ---------- */
+    function quarterSeries() {
+      var DATA = typeof ECOM_DATA !== 'undefined' ? ECOM_DATA : {};
+      var hl = DATA[curP] && DATA[curP].parts ? DATA[curP].parts : [curP];
+      return DATASETS.filter(function (x) { return DATA[x.p] && !DATA[x.p].parts; }).map(function (x) {
+        var b = periodBuild(x.p);
+        var r = b && scopeRaw(b.RAW, curCat, curSub);
+        var lbl = String(x.label).split(' ')[0];
+        return { lbl: lbl, cur: r ? r.gross.cur : null, pre: r ? r.gross.pre : null, on: hl.indexOf(x.p) >= 0 };
+      });
+    }
+    function renderTrend(r) {
+      var canMonth = curCat === 'all' && MONTHLY && MONTHLY.length > 0;
+      if (!canMonth && trendMode === 'm') trendMode = 'q';
+      var series = trendMode === 'm'
+        ? MONTHLY.map(function (m) { return { lbl: m.m, cur: m.rv, pre: m.pre_rv, on: true }; })
+        : quarterSeries();
+      var yCur = yearOf(PERIOD.cur), yPre = yearOf(PERIOD.pre);
+      var toggle = '<div class="no-print inline-flex rounded-xl bg-slate-100 p-1">' +
+        '<button type="button" class="seg-btn ' + (trendMode === 'q' ? 'seg-on' : 'seg-off') + '" onclick="setTrend(\'q\')">Theo quý</button>' +
+        '<button type="button" class="seg-btn ' + (trendMode === 'm' ? 'seg-on' : 'seg-off') + (canMonth ? '' : ' cursor-not-allowed opacity-40') + '" ' + (canMonth ? 'onclick="setTrend(\'m\')"' : 'disabled title="Chỉ có data theo tháng ở cấp toàn thị trường, và chỉ ở kỳ có data tháng"') + '>Theo tháng</button></div>';
+      var g = r ? r.gross : null;
+      var summary = g ? '<div class="mb-4 flex flex-wrap items-end gap-x-6 gap-y-2">' +
+        '<div><p class="text-xs font-medium text-slate-500">Gross Sales ' + esc(PERIOD.cur) + '</p><p class="text-2xl font-bold tabular-nums text-slate-900">' + fmtTy(g.cur) + '</p></div>' +
+        '<div><p class="text-xs font-medium text-slate-500">' + esc(PERIOD.pre) + '</p><p class="text-lg font-semibold tabular-nums text-slate-400">' + fmtTy(g.pre) + '</p></div>' +
+        '<div class="pb-1">' + badge(pct(g.cur, g.pre, g.g)) + '</div></div>' : '';
+      var sub = (trendMode === 'm' ? 'Theo tháng · toàn thị trường' : 'Theo quý · ' + scopeName()) + ' · Tỷ VND';
+      var hasData = series.some(function (s) { return isNum(s.cur); });
+      document.getElementById('trendCard').innerHTML = cardHead('📈', 'Revenue Trend', sub, toggle) + summary +
+        (hasData ? '<div class="relative h-64 sm:h-72"><canvas id="trendChart"></canvas></div>' : emptyState('Chưa có dữ liệu xu hướng cho scope này.'));
+      if (!hasData) return;
+      var grad = function (ctx) {
+        var c = ctx.chart, a = c.chartArea;
+        if (!a) return rgba('#1a56db', .1);
+        var gr = c.ctx.createLinearGradient(0, a.top, 0, a.bottom);
+        gr.addColorStop(0, rgba('#1a56db', .22)); gr.addColorStop(1, rgba('#1a56db', 0));
+        return gr;
+      };
+      mkChart('trendChart', {
+        type: 'line',
+        data: {
+          labels: series.map(function (s) { return s.lbl; }),
+          datasets: [
+            { label: yPre, data: series.map(function (s) { return s.pre; }), borderColor: '#94a3b8', backgroundColor: '#94a3b8', borderDash: [6, 4], borderWidth: 2, pointRadius: 3, pointHoverRadius: 5, cubicInterpolationMode: 'monotone', spanGaps: true },
+            {
+              label: yCur, data: series.map(function (s) { return s.cur; }), borderColor: '#1a56db', backgroundColor: grad, fill: true, borderWidth: 3, cubicInterpolationMode: 'monotone', spanGaps: true,
+              pointRadius: series.map(function (s) { return s.on ? 6 : 3; }), pointHoverRadius: 7,
+              pointBackgroundColor: series.map(function (s) { return s.on ? '#1a56db' : '#fff'; }), pointBorderColor: '#1a56db', pointBorderWidth: 2
+            }
+          ]
+        },
+        options: {
+          maintainAspectRatio: false, interaction: { mode: 'index', intersect: false },
+          scales: {
+            y: { beginAtZero: true, grid: { color: '#f1f5f9' }, border: { display: false }, ticks: { callback: function (v) { return v + ' Tỷ'; } } },
+            x: { grid: { display: false }, border: { display: false } }
+          },
+          plugins: {
+            legend: { position: 'top', align: 'end', labels: { usePointStyle: true, boxWidth: 8 } },
+            tooltip: {
+              callbacks: {
+                label: function (c) { return ' ' + c.dataset.label + ': ' + fmtTy(c.parsed.y); },
+                footer: function (items) {
+                  var s = series[items[0].dataIndex];
+                  var p = isNum(s.cur) && isNum(s.pre) ? pct(s.cur, s.pre) : '';
+                  return p ? 'YoY: ' + p : '';
+                }
+              }
+            }
           }
         }
-        return k;
       });
-      EL[targetId].innerHTML = dkpis.map((k, i) => { const neg = isNeg(k.g); const arrow = neg ? '↘' : '↗'; const cls = neg ? ' down' : ''; return `<div class="kpi-card ani d${i + 1}"><div class="kpi-top"><div class="kpi-icon ${k.ic}">${KI[k.ic]}</div>${k.g ? `<span class="kpi-growth${cls}">${arrow} ${k.g}</span>` : ''}</div><p class="kpi-label">${k.l}</p><p class="kpi-value">${k.v} ${k.u ? `<span class="unit">${k.u}</span>` : ''}</p>${k.sub ? `<p class="kpi-sub">${k.sub}</p>` : ''}</div>` }).join('');
     }
-    function renderCharts(d) {
-      // Brand: cap at top 5 + Others
-      const rawBr = [...d.brand].sort((a, b) => b.cur - a.cur);
-      const othersE = rawBr.find(b => b.n === 'Others');
-      const named = rawBr.filter(b => b.n !== 'Others');
-      const top5 = named.slice(0, 5);
-      const excess = named.slice(5);
-      const oCur = excess.reduce((s, b) => s + b.cur, 0) + (othersE ? othersE.cur : 0);
-      const oPre = excess.reduce((s, b) => s + b.pre, 0) + (othersE ? othersE.pre : 0);
-      const brands = [...top5, { n: 'Others', cur: oCur, pre: oPre, c: '#cbd5e1' }];
 
-      // Platform bars — CURRENT YEAR FIRST
-      const mx = Math.max(...d.plat.map(p => Math.max(p.cur, p.pre)));
-      const pFmt = v => v >= 1 ? v.toFixed(1) + ' tỷ' : (v * 1000).toFixed(1) + ' tr';
-      const platHTML = d.plat.map(p => {
-        const gc = p.cur > p.pre ? 'up' : 'down';
-        const gv = p.pre > 0 ? ((p.cur - p.pre) / p.pre * 100).toFixed(0) : 0;
-        const arrow = gc === 'up' ? '↗' : '↘';
-        return `<div class="plat-item"><div class="plat-head"><span class="plat-name"><span class="dot" style="background:${p.c}"></span>${p.n}</span><span class="plat-change ${gc}">${arrow} ${gc === 'up' ? '+' : ''}${gv}%</span></div><div class="plat-bars"><div class="plat-bar-row"><span class="yr">${PERIOD.cur}</span><div class="track"><div class="fill" style="width:${p.cur / mx * 100}%;background:${p.c}"></div></div><span class="val">${pFmt(p.cur)}</span></div><div class="plat-bar-row prev"><span class="yr">${PERIOD.pre}</span><div class="track"><div class="fill" style="width:${p.pre / mx * 100}%;background:${p.c};opacity:0.4"></div></div><span class="val">${pFmt(p.pre)}</span></div></div></div>`;
+    /* ---------- cột phải: sàn (thay cho "customer acquisition") ---------- */
+    function renderPlat(d) {
+      var plat = d.plat || [];
+      var rows = plat.map(function (p) {
+        return '<li class="flex items-center gap-3 py-2"><span class="h-2.5 w-2.5 shrink-0 rounded-full" style="background:' + p.c + '"></span>' +
+          '<span class="flex-1 text-sm font-medium text-slate-700">' + esc(p.n) + '</span>' +
+          '<span class="text-sm font-bold tabular-nums text-slate-900">' + fmtTy(p.cur) + '</span>' +
+          '<span class="w-[64px] text-right">' + badge(pct(p.cur, p.pre)) + '</span></li>';
       }).join('');
-
-      // Brand donut
-      const R = 52, CX = 60, CY = 60, SW = 12, Circ = 2 * Math.PI * R;
-      let offset = 0;
-      const segs = brands.map(b => { const len = b.cur / 100 * Circ; const gap = 1.5; const s = `<circle class="donut-seg" cx="${CX}" cy="${CY}" r="${R}" fill="none" stroke="${b.c}" stroke-width="${SW}" stroke-dasharray="${Math.max(len - gap, 0)} ${Circ - Math.max(len - gap, 0)}" stroke-dashoffset="${-offset}" stroke-linecap="round" style="transform-origin:${CX}px ${CY}px"/>`; offset += len; return s; }).join('');
-      const topBrand = brands[0];
-      const topVal = Math.round(topBrand.cur * 10) / 10;
-      const donutSVG = `<div class="donut-wrap"><div class="donut-box"><svg class="donut-svg" viewBox="0 0 120 120"><circle cx="${CX}" cy="${CY}" r="${R}" fill="none" stroke="var(--bd)" stroke-width="${SW}" opacity=".25"/>${segs}</svg><div class="donut-center"><div class="dv" style="color:${topBrand.c}">${topVal}%</div><div class="dl" style="color:${topBrand.c}">${topBrand.n}</div></div></div></div>`;
-      const legendHTML = brands.map(b => { const cur = Math.round(b.cur * 10) / 10; const diff = Math.round((b.cur - b.pre) * 10) / 10; const cls = diff > 0 ? 'up' : diff < 0 ? 'down' : 'flat'; const val = diff == 0 ? 'Stable' : (diff > 0 ? `+${diff}` : diff) + 'pp YoY'; return `<div class="brand-legend-item"><div class="bl-left"><span class="bl-dot" style="background:${b.c}"></span><span class="bl-name">${b.n}</span></div><span class="bl-val ${cls}">${cur}% (${val})</span></div>`; }).join('');
-      const brandCard = `<div class="card-hdr"><span class="ic">🌐</span><h2 class="card-title">Brand Landscape ${PERIOD.cur}</h2></div>${donutSVG}<div class="brand-legend">${legendHTML}</div>`;
-
-      EL.charts1.className = 'content-grid fade-content';
-      EL.charts1.innerHTML =
-        `<div class="card"><div class="card-hdr"><span class="ic">📈</span><h2 class="card-title">Growth Dynamics by Platform</h2></div>${platHTML}</div>` +
-        `<div class="card">${brandCard}</div>`;
+      document.getElementById('platCard').innerHTML = cardHead('🛒', 'Sales by Platform', PERIOD.pre + ' (trái) vs ' + PERIOD.cur + ' (phải) · Tỷ VND') +
+        '<div class="relative h-56"><canvas id="platChart"></canvas></div><ul class="mt-3 divide-y divide-slate-100">' + rows + '</ul>';
+      mkChart('platChart', {
+        type: 'bar',
+        data: {
+          labels: plat.map(function (p) { return p.n; }),
+          datasets: [
+            { label: PERIOD.pre, data: plat.map(function (p) { return p.pre; }), backgroundColor: plat.map(function (p) { return rgba(p.c, .28); }), borderRadius: 6, maxBarThickness: 34 },
+            { label: PERIOD.cur, data: plat.map(function (p) { return p.cur; }), backgroundColor: plat.map(function (p) { return p.c; }), borderRadius: 6, maxBarThickness: 34 }
+          ]
+        },
+        options: {
+          maintainAspectRatio: false,
+          scales: { y: { beginAtZero: true, grid: { color: '#f1f5f9' }, border: { display: false } }, x: { grid: { display: false }, border: { display: false } } },
+          plugins: { legend: { display: false }, tooltip: { callbacks: { label: function (c) { return ' ' + c.dataset.label + ': ' + fmtTy(c.parsed.y); } } } }
+        }
+      });
     }
-    /* Shared helper: Category horizontal bar chart HTML (reused in YTD + non-YTD) */
-    function renderCatChartHTML() {
-      const cats = ['but_viet', 'hoc_cu', 'my_thuat', 'van_phong_pham'];
-      const colors = ['#3b82f6', '#10b981', '#eab308', '#8b5cf6'];
-      const gV = s => { let m = String(s).match(/[\d.]+/); return m ? parseFloat(m[0]) : 0; };
-      let mx = 0;
-      cats.forEach(k => { if (!CAT[k]) return; const c = gV(CAT[k].kpi[0].v), p = gV(CAT[k].kpi[0].sub); if (c > mx) mx = c; if (p > mx) mx = p; });
-      return cats.map((k, i) => {
-        if (!CAT[k]) return '';
-        const cd = CAT[k], cur = gV(cd.kpi[0].v), pre = gV(cd.kpi[0].sub), gro = cd.kpi[0].g || '';
-        const gc = gro.includes('-') ? 'down' : 'up', arrow = gc === 'up' ? '↗' : '↘';
-        const c = colors[i % colors.length];
-        return `<div class="plat-item"><div class="plat-head"><span class="plat-name" style="font-size:15px;font-weight:600"><span class="pi">${cd.i}</span> ${cd.n}</span><span class="plat-change ${gc}" style="font-size:14px;font-weight:700">${arrow} ${gro}</span></div><div class="plat-bars"><div class="plat-bar-row"><span class="yr" style="width:60px">${PERIOD.cur}</span><div class="track"><div class="fill" style="width:${cur / mx * 100}%;background:${c}"></div></div><span class="val" style="font-weight:700">${cur.toFixed(1)} tỷ</span></div><div class="plat-bar-row prev"><span class="yr" style="width:60px">${PERIOD.pre}</span><div class="track"><div class="fill" style="width:${pre / mx * 100}%;background:${c};opacity:0.6"></div></div><span class="val">${pre.toFixed(1)} tỷ</span></div></div></div>`;
-      }).join('');
-    }
+
+    /* ---------- cột phải: phân khúc giá ---------- */
     function renderPrice(d) {
-      if (EL.priceSection1) EL.priceSection1.style.display = '';
-      if (curCat === 'all') {
-        EL.priceSection1.innerHTML = `<div class="card"><div class="card-hdr" style="margin-bottom:16px;border-bottom:1px solid var(--bd);padding-bottom:12px"><span class="ic">📈</span><h2 class="card-title">Growth Dynamics by Category (Gross Sales)</h2></div><div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(300px, 1fr));gap:24px;padding:8px 0">${renderCatChartHTML()}</div></div>`;
-        return;
-      }
-      const totals = d.price.map(p => p.s + p.l + p.t);
-      const mx = Math.max(...totals);
-      const fmt = v => v >= 1 ? (v).toFixed(1) + ' tỷ' : (v * 1000).toFixed(0) + ' tr';
-      const colors = ['#3b82f6', '#1a56db', '#8b5cf6', '#6366f1', '#0ea5e9', '#818cf8', '#60a5fa', '#38bdf8'];
-      const grand = totals.reduce((a, b) => a + b, 0);
-      const barsHTML = d.price.map((p, i) => { const tot = totals[i]; const h = tot / mx * 100; return `<div class="price-col"><div class="price-bar-wrap"><div class="price-stack" style="height:${h}%"><span class="pv">${fmt(tot)}</span><div class="seg" style="height:100%;background:${colors[i % 8]}"></div></div></div><span class="price-range">${p.r}</span></div>` }).join('');
-      EL.priceSection1.innerHTML = `<div class="card"><div class="card-hdr"><span class="ic">💰</span><h2 class="card-title">Revenue by Price Segment</h2></div><div class="price-grid">${barsHTML}</div></div>`;
+      var price = d.price || [];
+      var vals = price.map(function (p) { return p.s + p.l + p.t; });
+      var mx = Math.max.apply(null, vals.concat([0]));
+      var iMax = vals.indexOf(mx);
+      document.getElementById('priceCard').innerHTML = cardHead('💰', 'Revenue by Price Segment', 'Tổng mọi sàn · ' + PERIOD.cur + ' · Tỷ VND',
+        mx > 0 ? '<span class="rounded-full bg-brand-50 px-2.5 py-1 text-xs font-semibold text-brand-700">Đỉnh: ' + esc(price[iMax].r) + '</span>' : '') +
+        (mx > 0 ? '<div class="relative h-[19rem]"><canvas id="priceChart"></canvas></div>' : emptyState('Chưa có dữ liệu phân khúc giá.'));
+      if (!(mx > 0)) return;
+      mkChart('priceChart', {
+        type: 'bar',
+        data: { labels: price.map(function (p) { return p.r; }), datasets: [{ label: 'Gross Sales', data: vals, backgroundColor: vals.map(function (v, i) { return i === iMax ? '#1a56db' : rgba('#1a56db', .35); }), borderRadius: 5, maxBarThickness: 28 }] },
+        options: {
+          maintainAspectRatio: false,
+          scales: {
+            y: { beginAtZero: true, grid: { color: '#f1f5f9' }, border: { display: false } },
+            x: { grid: { display: false }, border: { display: false }, ticks: { maxRotation: 60, minRotation: 45, font: { size: 10 } } }
+          },
+          plugins: { legend: { display: false }, tooltip: { callbacks: { label: function (c) { return ' ' + fmtTy(c.parsed.y); } } } }
+        }
+      });
     }
-    function renderProducts(d) {
-      let prods = d._sub ? d.prod : (curSub === 'all' ? d.prod : d.prod.filter(p => p.sc === curSub));
-      if (prods.length === 0) prods = d.prod;
-      const chN = { shopee: 'Shopee', tiktok: 'TikTok Shop', lazada: 'Lazada' };
-      const rows = prods.map((p, i) => {
-        const rc = i < 3 ? 'rk-' + (i + 1) : 'rk-d';
-        const gn = p.g ? (parseFloat(p.g) >= 0 ? 'up' : 'down') : '';
-        const ugn = p.ug ? (parseFloat(p.ug) >= 0 ? 'up' : 'down') : '';
-        const gTxt = p.g ? `<span class="td-g ${gn}">${gn === 'up' ? '↗' : '↘'} ${p.g}</span>` : '-';
-        const ugTxt = p.ug ? `<span class="td-g ${ugn}">${ugn === 'up' ? '↗' : '↘'} ${p.ug}</span>` : '-';
-        return `<tr><td class="rk"><span class="rk-badge ${rc}">${i + 1}</span></td><td class="td-prod"><div class="pn">${p.n}</div><div class="pb">${p.br}</div></td><td class="td-link">${p.url ? `<a href="${p.url}" target="_blank" class="prod-link" title="View product">🔗</a>` : '-'}</td><td>${p.pr || '-'}</td><td>${p.fm || '-'}</td><td><span class="ch-pill ch-${p.ch}">${chN[p.ch]}</span></td><td class="td-rev">${p.rv}</td><td>${gTxt}</td><td class="td-num">${p.us || '-'}</td><td>${ugTxt}</td><td class="td-num">${p.tr || '-'}</td><td class="td-num">${p.tu || '-'}</td><td class="td-num">${p.re || '-'}</td></tr>`
+
+    /* ---------- bảng Top SKU ---------- */
+    function renderSKU(d) {
+      var prods = (d.prod || []).filter(function (p) { return skuPlat === 'all' || p.ch === skuPlat; });
+      var top10 = d.dkpi && d.dkpi[1], lead = d.dkpi && d.dkpi[3];
+      var chips = '<div class="flex flex-wrap gap-2">' +
+        (top10 ? '<span class="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-600">Top 10 Contribution: <b class="text-slate-900">' + esc(top10.v) + '</b> ' + esc(top10.sub || '') + '</span>' : '') +
+        (lead ? '<span class="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-600">Leading Brand: <b class="text-slate-900">' + esc(lead.v) + '</b> · ' + esc(lead.sub || '') + '</span>' : '') + '</div>';
+      var tabs = '<div class="no-print no-scrollbar inline-flex overflow-x-auto rounded-xl bg-slate-100 p-1">' +
+        [['all', 'Tất cả sàn']].concat(ECOM_CATALOG.platforms.map(function (p) { return [p.k, p.n]; })).map(function (t) {
+          return '<button type="button" class="seg-btn whitespace-nowrap ' + (skuPlat === t[0] ? 'seg-on' : 'seg-off') + '" onclick="setSkuPlat(\'' + t[0] + '\')">' + esc(t[1]) + '</button>';
+        }).join('') + '</div>';
+      var gCell = function (g) { return g ? badge(g) : '<span class="text-slate-300">—</span>'; };
+      var rows = prods.map(function (p, i) {
+        var pl = PLAT[p.ch] || { n: p.ch, c: '#64748b' };
+        var rk = i < 3 ? ['bg-amber-400 text-white', 'bg-slate-400 text-white', 'bg-orange-300 text-white'][i] : 'bg-slate-100 text-slate-500';
+        return '<tr class="transition hover:bg-slate-50/80">' +
+          '<td class="py-3.5 pl-5 pr-2 sm:pl-6"><span class="grid h-7 w-7 place-items-center rounded-lg text-xs font-bold ' + rk + '">' + (i + 1) + '</span></td>' +
+          '<td class="max-w-[320px] px-3 py-3.5"><p class="line-clamp-2 text-sm font-semibold text-slate-800" title="' + esc(p.n) + '">' + esc(p.n) + '</p>' +
+          '<p class="mt-0.5 flex items-center gap-1.5 text-xs text-slate-500"><span class="h-2 w-2 rounded-full" style="background:' + brandColor(p.br) + '"></span>' + esc(p.br) + (p.fm ? ' · ' + esc(p.fm) : '') + '</p></td>' +
+          '<td class="whitespace-nowrap px-3 py-3.5"><span class="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-semibold ring-1 ring-inset" style="color:' + pl.c + ';background:' + rgba(pl.c, .08) + ';--tw-ring-color:' + rgba(pl.c, .25) + '">' + esc(pl.n) + '</span></td>' +
+          '<td class="hidden whitespace-nowrap px-3 py-3.5 text-right text-sm tabular-nums text-slate-600 md:table-cell">' + esc(p.pr || '—') + '</td>' +
+          '<td class="whitespace-nowrap px-3 py-3.5 text-right text-sm font-bold tabular-nums text-slate-900">' + esc(p.rv || '—') + '</td>' +
+          '<td class="whitespace-nowrap px-3 py-3.5 text-right">' + gCell(p.g) + '</td>' +
+          '<td class="hidden whitespace-nowrap px-3 py-3.5 text-right text-sm tabular-nums text-slate-600 sm:table-cell">' + esc(p.us || '—') + '</td>' +
+          '<td class="hidden whitespace-nowrap px-3 py-3.5 text-right lg:table-cell">' + gCell(p.ug) + '</td>' +
+          '<td class="hidden whitespace-nowrap px-3 py-3.5 text-right text-sm tabular-nums text-slate-600 xl:table-cell">' + esc(p.re || '—') + '</td>' +
+          '<td class="whitespace-nowrap py-3.5 pl-3 pr-5 text-right sm:pr-6">' + (p.url ? '<a href="' + esc(p.url) + '" target="_blank" rel="noopener" class="inline-grid h-8 w-8 place-items-center rounded-lg text-slate-400 transition hover:bg-brand-50 hover:text-brand-600" title="Xem sản phẩm"><svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14 21 3"/></svg></a>' : '<span class="text-slate-300">—</span>') + '</td>' +
+          '</tr>';
       }).join('');
-      if (!EL.prodTbody) {
-        EL.prodGrid2.innerHTML = `<div class="tbl-wrap"><div class="tbl-hdr"><span class="tbl-title" id="prodTblTitle"></span></div><table class="tbl"><thead><tr><th class="rk">Rank</th><th>Product Details</th><th>Link</th><th>Price</th><th>Packed Size</th><th>Platform</th><th>Gross Sales</th><th>Growth</th><th>Units Sold</th><th>Growth</th><th>Total Gross Sales</th><th>Total Units</th><th>Reviews</th></tr></thead><tbody id="prodTbody"></tbody></table></div>`;
-        EL.prodTbody = document.getElementById('prodTbody');
-        EL.prodTblTitle = document.getElementById('prodTblTitle');
+      var th = 'px-3 py-3 text-xs font-semibold uppercase tracking-wider text-slate-500';
+      document.getElementById('skuCard').innerHTML =
+        '<div class="flex flex-col gap-4 p-5 sm:p-6 lg:flex-row lg:items-start lg:justify-between">' +
+        '<div class="space-y-3">' + cardHead('🏆', 'Top Best-selling SKUs', scopeName() + ' · ' + PERIOD.cur + ' · Gross Sales trên 1 sàn').replace('mb-5', 'mb-0') + chips + '</div>' + tabs + '</div>' +
+        (prods.length ? '<div class="overflow-x-auto border-t border-slate-100"><table class="min-w-full divide-y divide-slate-100">' +
+          '<thead class="bg-slate-50/70"><tr>' +
+          '<th class="py-3 pl-5 pr-2 text-left text-xs font-semibold uppercase tracking-wider text-slate-500 sm:pl-6">#</th>' +
+          '<th class="' + th + ' text-left">Product</th>' +
+          '<th class="' + th + ' text-left">Platform</th>' +
+          '<th class="' + th + ' hidden text-right md:table-cell">Price</th>' +
+          '<th class="' + th + ' text-right">Gross Sales</th>' +
+          '<th class="' + th + ' text-right">Growth</th>' +
+          '<th class="' + th + ' hidden text-right sm:table-cell">Units</th>' +
+          '<th class="' + th + ' hidden text-right lg:table-cell">Units Growth</th>' +
+          '<th class="' + th + ' hidden text-right xl:table-cell">Reviews</th>' +
+          '<th class="py-3 pl-3 pr-5 text-right text-xs font-semibold uppercase tracking-wider text-slate-500 sm:pr-6">Link</th>' +
+          '</tr></thead><tbody class="divide-y divide-slate-100 bg-white">' + rows + '</tbody></table></div>'
+          : '<div class="border-t border-slate-100 p-6">' + emptyState('Không có SKU nào trong top 10 thuộc sàn này.') + '</div>');
+    }
+
+    /* ---------- render tất cả ---------- */
+    function renderAll() {
+      var d = scopeDisplay();
+      var r = scopeRaw(RAW, curCat, curSub);
+      renderFilters();
+      renderScopeLine();
+      renderKPIs(d, r);
+      renderInsights(d, r);
+      renderRank();
+      renderBrand(d);
+      renderTrend(r);
+      renderPlat(d);
+      renderPrice(d);
+      renderSKU(d);
+    }
+
+    /* ---------- hành động ---------- */
+    function syncURL(push) {
+      var u = new URL(location.href);
+      u.searchParams.set('p', curP);
+      if (curCat === 'all') u.searchParams.delete('cat'); else u.searchParams.set('cat', curCat);
+      if (curSub === 'all') u.searchParams.delete('sub'); else u.searchParams.set('sub', curSub);
+      u.searchParams.delete('slide');
+      if (push) history.pushState(null, '', u.toString()); else history.replaceState(null, '', u.toString());
+    }
+    function setCat(k) { if (!CAT[k] || (k === curCat && curSub === 'all')) return; curCat = k; curSub = 'all'; skuPlat = 'all'; syncURL(); renderAll(); }
+    function setSub(s) { if (s === curSub) return; curSub = s; skuPlat = 'all'; syncURL(); renderAll(); }
+    function setTrend(m) { trendMode = m; renderTrend(scopeRaw(RAW, curCat, curSub)); }
+    function setSkuPlat(p) { skuPlat = p; renderSKU(scopeDisplay()); }
+    /* Đổi kỳ ngay trên trang (không tải lại): data mọi kỳ trong DATASETS đã được nạp sẵn. */
+    function switchPeriod(p, fromHistory) {
+      if (p === curP) return;
+      var b = periodBuild(p);
+      if (!b) {                                  // kỳ chưa nạp → tải lại trang như cũ
+        var u = new URL(location.href); u.searchParams.set('p', p); location.href = u.toString(); return;
       }
-      EL.prodTblTitle.innerText = `🏆 TOP ${prods.length} BEST-SELLING SKU RANKINGS`;
-      EL.prodTbody.innerHTML = rows;
+      curP = p; PERIOD = b.PERIOD; CAT = b.CAT; MONTHLY = b.MONTHLY; RAW = b.RAW;
+      if (!CAT[curCat]) { curCat = 'all'; curSub = 'all'; }
+      if (!CAT[curCat].sc.some(function (s) { return s.k === curSub; })) curSub = 'all';
+      renderHeader();                              // tab đổi trạng thái ngay
+      if (!fromHistory) syncURL(true);
+      var els = document.querySelectorAll('.fade-target');
+      els.forEach(function (e) { e.classList.add('is-fading'); });
+      clearTimeout(switching);
+      switching = setTimeout(function () {
+        renderAll();
+        requestAnimationFrame(function () { els.forEach(function (e) { e.classList.remove('is-fading'); }); });
+      }, 200);
     }
-
-    /* ===== FILTER LOGIC ===== */
-    function setCat(cat) {
-      if (cat === curCat) return; curCat = cat; curSub = 'all'; refreshAll();
-    }
-    function setSub(sub) {
-      if (sub === curSub) return; curSub = sub; refreshAll();
-    }
-    function refreshAll() {
-      const fadeIds = ['kpi1','charts1','priceSection1','kpi2','prodGrid2','trendSection'];
-      fadeIds.forEach(id => { if (EL[id]) EL[id].classList.add('fading') });
-      clearTimeout(_rt);
-      _rt = setTimeout(() => {
-        const d = getData();
-        renderCatFilter(curSlide); renderSubFilter(curSlide);
-        renderExecKPIs(d); renderCharts(d); renderPrice(d);
-        renderKPIs('kpi2', d); renderProducts(d);
-        fadeIds.forEach(id => { if (EL[id]) EL[id].classList.remove('fading') });
-      }, 350);
-    }
-
-    /* ===== NAVIGATION ===== */
-    function goTo(n) {
-      if (n < 1 || n > maxSlides || n === curSlide) return;
-      EL['slide' + curSlide].classList.remove('active');
-      curSlide = n;
-      EL['slide' + curSlide].classList.add('active');
-      renderCatFilter(curSlide); renderSubFilter(curSlide);
-    }
-    function switchPeriod(p) {
-      const url = new URL(location.href);
-      url.searchParams.set('p', p);
-      url.searchParams.set('cat', curCat);
-      url.searchParams.set('sub', curSub);
-      url.searchParams.set('slide', Math.min(curSlide, maxSlides));
-      location.href = url.toString();
-    }
-
-    /* ===== MONTHLY TREND CHART ===== */
-    function switchMetric(m) {
-      curMetric = m;
-      renderTrendChart();
-    }
-    function renderTrendChart() {
-      if (typeof MONTHLY === 'undefined' || !EL.trendSection) return;
-      const m = curMetric;
-      const isRev = m === 'rv';
-      const mx = Math.max(...MONTHLY.map(d => Math.max(d[m], d['pre_' + m])));
-      const fmt = v => isRev ? v.toFixed(1) + ' tỷ' : v.toFixed(1) + '%';
-      const maxH = 160;
-      const barsHTML = MONTHLY.map(d => {
-        const cur = d[m], pre = d['pre_' + m];
-        const pct = pre > 0 ? ((cur - pre) / pre * 100).toFixed(0) : 0;
-        const gc = cur >= pre ? 'up' : 'down';
-        const curH = Math.round(cur / mx * maxH);
-        const preH = Math.round(pre / mx * maxH);
-        return `<div class="trend-bar-group">
-          <span class="trend-change ${gc}">${gc==='up'?'↗':'↘'} ${gc==='up'?'+':''}${pct}%</span>
-          <div class="trend-bar-pair">
-            <div style="display:flex;flex-direction:column;align-items:center;gap:2px;justify-content:flex-end">
-              <span class="trend-val pre">${fmt(pre)}</span>
-              <div class="trend-bar" style="height:${preH}px;background:#cbd5e1" title="${PERIOD.pre}: ${fmt(pre)}"></div>
-            </div>
-            <div style="display:flex;flex-direction:column;align-items:center;gap:2px;justify-content:flex-end">
-              <span class="trend-val">${fmt(cur)}</span>
-              <div class="trend-bar" style="height:${curH}px;background:linear-gradient(180deg,#3b82f6,#1a56db)" title="${PERIOD.cur}: ${fmt(cur)}"></div>
-            </div>
-          </div>
-          <span class="trend-month">${d.m}</span>
-        </div>`;
-      }).join('');
-      EL.trendSection.innerHTML = `<div class="card" style="overflow:visible">
-        <div class="card-hdr" style="margin-bottom:12px;border-bottom:1px solid var(--bd);padding-bottom:12px;flex-wrap:wrap;gap:10px">
-          <div style="display:flex;align-items:center;gap:10px"><span class="ic">📈</span><h2 class="card-title">Monthly Performance Trend — ${PERIOD.label}</h2></div>
-          <div style="display:flex;gap:8px;margin-left:auto">
-            <button class="mtab${m==='rv'?' active':''}" onclick="switchMetric('rv')">Gross Sales (tỷ)</button>
-            <button class="mtab${m==='ts'?' active':''}" onclick="switchMetric('ts')">📱 TikTok Share (%)</button>
-          </div>
-        </div>
-        <div class="trend-legend">
-          <span><span class="trend-dot" style="background:#cbd5e1"></span>${PERIOD.pre}</span>
-          <span><span class="trend-dot" style="background:#1a56db"></span>${PERIOD.cur}</span>
-        </div>
-        <div class="trend-bars">${barsHTML}</div>
-      </div>`;
-    }
-    document.addEventListener('keydown', e => {
-      if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); goTo(curSlide + 1) }
-      else if (e.key === 'ArrowLeft') { e.preventDefault(); goTo(curSlide - 1) }
+    /* Nút Back/Forward của trình duyệt */
+    window.addEventListener('popstate', function () {
+      var q = new URLSearchParams(location.search);
+      var p = (q.get('p') || 'q1').replace(/[^a-z0-9]/g, '');
+      curCat = q.get('cat') || 'all'; curSub = q.get('sub') || 'all';
+      if (p !== curP) switchPeriod(p, true);
+      else { if (!CAT[curCat]) curCat = 'all'; if (!CAT[curCat].sc.some(function (s) { return s.k === curSub; })) curSub = 'all'; renderAll(); }
     });
-    let tx = 0;
-    document.addEventListener('touchstart', e => { tx = e.changedTouches[0].screenX });
-    document.addEventListener('touchend', e => { const d = e.changedTouches[0].screenX - tx; if (d < -50) goTo(curSlide + 1); if (d > 50) goTo(curSlide - 1) });
-
-    /* ===== INIT ===== */
-    window.addEventListener('load', () => {
-      if (typeof CAT === 'undefined') {
-        document.body.innerHTML = '<div style="padding: 50px; font-family: sans-serif; text-align: center; color: #ef4444;"><h2>Lỗi tải dữ liệu</h2><p>Không tìm thấy biến dữ liệu (CAT). Vui lòng đảm bảo file <strong>ecom_data.js</strong> nằm cùng thư mục và không bị lỗi cú pháp.</p></div>';
+    /* ---------- khởi động ---------- */
+    window.addEventListener('load', function () {
+      if (!CAT || !Object.keys(CAT).length) {
+        document.body.innerHTML = '<div class="mx-auto max-w-xl p-10 text-center"><h2 class="text-xl font-bold text-rose-600">Lỗi tải dữ liệu</h2>' +
+          '<p class="mt-3 text-slate-600">' + esc(DATA_ERROR || 'Không nạp được data.') + '</p>' +
+          '<p class="mt-3 text-sm text-slate-500">Kiểm tra file <b>data/2026/ecom_data_' + esc(curP) + '.js</b> có tồn tại và không lỗi cú pháp. Chạy <code>node .claude/skills/update-ecom-from-raw/scripts/check_data.js</code> để kiểm tra.</p></div>';
         return;
       }
-      ['kpi1','charts1','priceSection1','kpi2','prodGrid2','catF1','catF2','subF1','subF2',
-       'slide1','slide2','badge1','badge2','periodBar1','periodBar2','trendSection']
-        .forEach(id => { EL[id] = document.getElementById(id); });
-
-      // Set period labels from PERIOD config
-      if (typeof PERIOD !== 'undefined') {
-        ['badge1','badge2','badge3'].forEach(id => { if (EL[id]) EL[id].textContent = PERIOD.label; });
-        document.title = `Thien Long Group — Sector Performance Analysis ${PERIOD.cur}`;
+      if (typeof Chart !== 'undefined') {
+        Chart.defaults.font.family = '"Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif';
+        Chart.defaults.color = '#64748b';
+        Chart.defaults.plugins.tooltip.backgroundColor = '#0f172a';
+        Chart.defaults.plugins.tooltip.padding = 10;
+        Chart.defaults.plugins.tooltip.cornerRadius = 8;
       }
-
-      // Render period selector pills
-      if (DATASETS.length > 1) {
-        const pillsHTML = `<span class="period-label">📅 Kỳ:</span>` +
-          DATASETS.map(d => `<button class="period-pill${d.p === curPeriodParam ? ' active' : ''}" onclick="switchPeriod('${d.p}')">${d.label}</button>`).join('');
-        ['periodBar1','periodBar2','periodBar3'].forEach(id => { if (EL[id]) EL[id].innerHTML = pillsHTML; });
-      }
-
-      // Restore slide from URL param (cap at maxSlides)
-      if (curSlide > 1 && curSlide <= maxSlides) {
-        EL.slide1.classList.remove('active');
-        EL['slide' + curSlide].classList.add('active');
-      }
-
-      refreshAll();
+      if (!CAT[curCat]) curCat = 'all';
+      if (!CAT[curCat].sc.some(function (s) { return s.k === curSub; })) curSub = 'all';
+      renderHeader();
+      syncURL();
+      renderAll();
     });
   </script>
 </body>
