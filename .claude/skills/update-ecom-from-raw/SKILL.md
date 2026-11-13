@@ -11,7 +11,7 @@ Mỗi folder `raw/<cate>_<sub>/` chứa file xuất từ Metric cho **1 scope**:
 
 Nguyên tắc chính: **số liệu lấy từ file, kỳ báo cáo lấy từ ngày trong file — không đoán.** Thiếu gì thì báo thiếu, không bịa.
 
-Quy tắc chung của dự án (dùng `var`, tên `'Thiên Long'`, màu thương hiệu) nằm trong `.claude/CLAUDE.md` và `.claude/rules/brand_colors.md`. Cấu trúc file data và nguồn từng trường: [reference.md](reference.md). Đọc 3 file đó trước.
+Quy tắc chung của dự án (dùng `var`, tên `'Thiên Long'`, màu thương hiệu) nằm trong `CLAUDE.md` (gốc repo) và `.claude/rules/brand_colors.md`. Cấu trúc file data và nguồn từng trường: [reference.md](reference.md). Đọc 3 file đó trước.
 
 ## Các bước
 
@@ -64,7 +64,7 @@ Kỳ cộng dồn (vd YTD 9 tháng): tạo file chỉ có `period` và `parts` (
 
 ## Sau khi ghi
 
-- Cập nhật mục "Trạng thái hiện tại" trong `.claude/CLAUDE.md` (scope nào đã có, còn thiếu gì).
+- Cập nhật mục "Quyết định đã chốt" / "Việc còn mở" trong `CLAUDE.md` (gốc repo) nếu có quyết định mới hoặc việc còn thiếu.
 - Người dùng chốt quyết định nghiệp vụ mới (vd gộp tên thương hiệu, đổi cách tính) → ghi vào bảng "Quyết định đã chốt" trong `KNOWLEDGE.md`.
 
 ## Chỉ có data sub-category, chưa có cấp category

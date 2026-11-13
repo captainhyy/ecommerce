@@ -1,6 +1,6 @@
 # Knowledge Base — Ecom Dashboard
 
-Bối cảnh nghiệp vụ và các quyết định đã chốt. Cách dùng: [README.md](README.md). Chi tiết kỹ thuật: [.claude/CLAUDE.md](.claude/CLAUDE.md).
+Bối cảnh nghiệp vụ và các quyết định đã chốt. Cách dùng: [README.md](README.md). Chi tiết kỹ thuật: [CLAUDE.md](CLAUDE.md).
 
 ## Mục tiêu
 
@@ -45,4 +45,4 @@ Dashboard dạng trình chiếu (2 slide) cho Ban điều hành Thiên Long Grou
 | 2026-11-12 | SKU không có thương hiệu (không suy được từ tên) ghi `OEM` ở mọi kỳ (thay `Generic`, `Others`, `OEM/Khác`) |
 | 2026-11-12 | YTD: Storefronts cộng thẳng các quý (giữ như cách cũ; 1 gian hàng bán ở 2 quý được đếm 2 lần) |
 
-Trạng thái data và việc còn mở: mục "Trạng thái hiện tại" trong [.claude/CLAUDE.md](.claude/CLAUDE.md).
+Trạng thái data và việc còn mở: mục "Quyết định đã chốt" và "Việc còn mở" trong [CLAUDE.md](CLAUDE.md).
