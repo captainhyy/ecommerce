@@ -19,7 +19,7 @@ python -m http.server 8000   # mở file:/// thì trình duyệt chặn nạp da
 # http://localhost:8000/?p=q3&cat=but_viet&sub=but_bi
 ```
 
-`?p=` = `q1` | `q2` | `q3` | `ytdh1` (mặc định `q1`).
+`?p=` = `q1` | `q2` | `q3` | `ytdh1` (mặc định `q3`, biến `DEFAULT_P` trong `index.html`).
 
 ## Cập nhật dữ liệu
 

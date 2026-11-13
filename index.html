@@ -136,7 +136,8 @@
       { p: 'q3', label: 'Q3 2026' },
       { p: 'ytdh1', label: 'YTD 2026' }
     ];
-    var curP = (new URLSearchParams(location.search).get('p') || 'q1').replace(/[^a-z0-9]/g, '');
+    var DEFAULT_P = 'q3';          // kỳ mở mặc định khi URL không có ?p=
+    var curP = (new URLSearchParams(location.search).get('p') || DEFAULT_P).replace(/[^a-z0-9]/g, '');
   </script>
   <script src="data/catalog.js"></script>
   <script src="data/brand_colors.js"></script>
@@ -715,7 +716,7 @@
     /* Nút Back/Forward của trình duyệt */
     window.addEventListener('popstate', function () {
       var q = new URLSearchParams(location.search);
-      var p = (q.get('p') || 'q1').replace(/[^a-z0-9]/g, '');
+      var p = (q.get('p') || DEFAULT_P).replace(/[^a-z0-9]/g, '');
       curCat = q.get('cat') || 'all'; curSub = q.get('sub') || 'all';
       if (p !== curP) switchPeriod(p, true);
       else { if (!CAT[curCat]) curCat = 'all'; if (!CAT[curCat].sc.some(function (s) { return s.k === curSub; })) curSub = 'all'; renderAll(); }
