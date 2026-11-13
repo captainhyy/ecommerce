@@ -9,7 +9,7 @@ Dashboard TMĐT (Shopee, TikTok Shop, Lazada) của Thiên Long, số liệu t�
   - `data/2026/ecom_data_<kỳ>.js`: **chỉ số gốc** từ Metric. Schema và nguồn từng trường: [reference.md](.claude/skills/update-ecom-from-raw/reference.md).
   - `data/ecom_engine.js`: số gốc → `PERIOD`, `CAT`, `MONTHLY`, `RAW`. Engine tính mọi chỉ số phái sinh, format đơn vị, "All Cate" và kỳ YTD.
   - Dùng chung: `data/catalog.js` (category, sub-category, sàn, khoảng giá; là nguồn chuẩn của key), `data/brand_colors.js` (màu thương hiệu).
-- Kỳ YTD (`ecom_data_ytdh1.js`) chỉ có `period` và `parts: ['q1','q2']`. Engine tự cộng.
+- Kỳ YTD (`ecom_data_ytdh1.js`) chỉ có `period` và `parts: ['q1','q2','q3']`. Engine tự cộng. Có quý mới thì thêm vào `parts`.
 - `index.html` nạp data của mọi kỳ trong mảng `DATASETS` (tab kỳ + trend theo quý). Đổi kỳ không tải lại trang.
 
 ## Chạy
