@@ -641,7 +641,7 @@
           '<td class="hidden whitespace-nowrap px-3 py-3.5 text-right text-sm tabular-nums text-slate-600 sm:table-cell">' + esc(p.us || '—') + '</td>' +
           '<td class="hidden whitespace-nowrap px-3 py-3.5 text-right lg:table-cell">' + gCell(p.ug) + '</td>' +
           '<td class="hidden whitespace-nowrap px-3 py-3.5 text-right text-sm tabular-nums text-slate-600 xl:table-cell">' + esc(p.re || '—') + '</td>' +
-          '<td class="whitespace-nowrap py-3.5 pl-3 pr-5 text-right sm:pr-6">' + (p.url ? '<a href="' + esc(p.url) + '" target="_blank" rel="noopener" class="inline-grid h-8 w-8 place-items-center rounded-lg text-slate-400 transition hover:bg-brand-50 hover:text-brand-600" title="Xem sản phẩm"><svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14 21 3"/></svg></a>' : '<span class="text-slate-300">—</span>') + '</td>' +
+          '<td class="whitespace-nowrap py-3.5 pl-3 pr-5 text-right sm:pr-6">' + (p.url ? '<a href="' + esc(p.url) + '" target="_blank" rel="noopener noreferrer" class="inline-grid h-8 w-8 place-items-center rounded-lg text-slate-400 transition hover:bg-brand-50 hover:text-brand-600" title="Xem sản phẩm"><svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14 21 3"/></svg></a>' : '<span class="text-slate-300">—</span>') + '</td>' +
           '</tr>';
       }).join('');
       var th = 'px-3 py-3 text-xs font-semibold uppercase tracking-wider text-slate-500';
